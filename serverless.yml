@@ -9,6 +9,8 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: ap-southeast-3 # Jakarta/Indonesia
+  stage: prod
+  timeout: 20
 
 functions:
   api:
