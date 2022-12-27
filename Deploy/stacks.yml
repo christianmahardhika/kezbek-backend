@@ -1,0 +1,25 @@
+## AWS Template KEZBEK RDS DB Instance
+
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'AWS CloudFormation Template for KEZBEK RDS DB Instance'
+Parameters:
+  DBInstanceClass:
+    Type: AWs::RDS::DBInstance
+    Properties:
+      DBInstanceClass: db.t3.micro
+      Engine: PostgreSQL
+      EngineVersion: 12.7
+      AllocatedStorage: 20
+      DBInstanceIdentifier: kezbek-rds-db-instance
+      DBName: kezbek
+      PubliclyAccessible: true
+      MasterUsername: kezbek
+      MasterUserPassword: kezbek
+      StorageType: gp2
+
+## AWS Template Amazon MQ Broker
+
+
+
+
+
