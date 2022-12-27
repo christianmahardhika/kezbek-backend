@@ -1,6 +1,8 @@
 # compiled output
 /dist
 /node_modules
+/Deploy/database
+/Deploy/redis
 
 # Logs
 logs

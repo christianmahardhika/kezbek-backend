@@ -24,11 +24,19 @@
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/mapped-types": "*",
+    "@nestjs/microservices": "^9.2.1",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/terminus": "^9.1.4",
+    "@nestjs/typeorm": "^9.0.1",
     "@vendia/serverless-express": "^4.10.1",
+    "amqp-connection-manager": "^4.1.9",
+    "amqplib": "^0.10.3",
+    "ioredis": "^5.2.4",
+    "pg": "^8.8.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "typeorm": "^0.3.11"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
