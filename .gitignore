@@ -3,6 +3,7 @@
 /node_modules
 /Deploy/database
 /Deploy/redis
+/Deploy/document_database
 
 # Logs
 logs

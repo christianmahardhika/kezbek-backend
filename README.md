@@ -10,7 +10,6 @@ Kezbek is a type of application that allows users to earn rewards or cash back w
 - Seemless integration with merchant (partner)
 - Seemless integration with payment gateway (e-wallet) by customer MSISDN
 
-
 - [*]CMS for merchant
 - [*]Report for invoice and transaction for merchant
 - [*]Check loyalty point for customer
@@ -20,6 +19,7 @@ Kezbek is a type of application that allows users to earn rewards or cash back w
 Currently, we are integrating with dummy payment gateway and dummy merchant
 
 ## ERD
+
 ![Data Structure](./docs/data_structure.png)
 
 ## Architecture
@@ -33,7 +33,12 @@ install [latest nodeJS](https://nodejs.org/en/download/)
 ```bash
 # run docker compose to setup the stacks that need by app
 
-docker compose -f deploy/docker-compose.yml up -d
+docker compose -f ./Deploy/docker-compose.yml up -d
+
+# Run the app with docker
+docker build -f ./Deploy/Dockerfile -t kezbek-backend .
+
+docker run -p 3000:3000 kezbek-backend
 
 # development
 $ npm run start
