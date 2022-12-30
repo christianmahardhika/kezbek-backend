@@ -20,7 +20,4 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm ci
-      - run: npm run test:cov
-      # See https://github.com/codecov/example-ci/blob/main/.github/workflows/ci.yml
-      - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+      - run: npm test
