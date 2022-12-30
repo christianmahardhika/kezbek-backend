@@ -24,3 +24,6 @@ jobs:
       - run: npm test
       - run: npm run lint
       - run: npm run format
+      # See https://github.com/codecov/example-ci/blob/main/.github/workflows/ci.yml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
