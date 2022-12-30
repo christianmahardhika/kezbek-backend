@@ -15,6 +15,19 @@ services:
       - ./database:/var/lib/postgresql/data
     ports:
       - 5432:5432
+      
+  document_database:
+    image: mongo:4.4.4-bionic
+    container_name: document_database
+    restart: always
+    volumes:
+      - ./document_database:/data/db
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongo
+      MONGO_INITDB_ROOT_PASSWORD: mongo
+      MONGO_INITDB_DATABASE: mongo
 
   redis:
     image: redis:6.0.9-alpine
