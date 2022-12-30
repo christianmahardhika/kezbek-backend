@@ -1,0 +1,160 @@
+@startuml Data Structure
+!include https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
+
+title Data Structure
+
+class "Partner" as P {
+    + id: string
+    + name: string
+    + logo: string
+    + api_key: string
+    + api_secret: string
+    + email: string
+    --
+    + created_at: datetime
+    + updated_at: datetime
+    + deleted_at: datetime
+}
+
+class "Customer" as C {
+    + id: string
+    + name: string
+    + email: string
+    + msisdn: string
+    --
+    + created_at: datetime
+    + updated_at: datetime
+    + deleted_at: datetime
+}
+
+class "Loyalty" as L {
+    + id: string
+    + customer_id: string
+    + current_tier_name: string
+    + current_tier: int
+    + next_tier: int
+    + previous_tier: int
+    + loyalty_point: int
+    --
+    + created_at: datetime
+    + updated_at: datetime
+    + deleted_at: datetime
+}
+
+class "Loyalty Rules"  as LR {
+    + id: string
+    + loyalty_id: string
+    + loyalty_tier: int
+    + max_loyalty_point: int
+    + min_loyalty_point: int
+    --
+    + created_at: datetime
+    + updated_at: datetime
+    + deleted_at: datetime
+}
+
+class "Loyalty History" as LH {
+    + id: string
+    + loyalty_id: string
+    + loyalty_tier: int
+    + loyalty_point: int
+    + loyalty_status: boolean
+    --
+    + created_at: datetime
+    + updated_at: datetime
+    + deleted_at: datetime
+}
+
+
+class "Promo Redemption" as PRD {
+    + id: string
+    + promo_id: string
+    + partner_id: string
+    + promo_code: string
+    + promo_status: boolean
+    + promo_description: text
+    + promo_image: string
+    + promo_terms: text
+    + promo_start_date: datetime
+    + promo_end_date: datetime
+    --
+    + created_at: datetime
+    + updated_at: datetime
+    + deleted_at: datetime
+}
+
+class "Promo Rules" as PR {
+    + id: string
+    + promo_id: string
+    + jsonRules{} // tbd json rules
+    --
+    + created_at: datetime
+    + updated_at: datetime
+    + deleted_at: datetime
+}
+
+class "Promo Redemption History" as PRDH {
+    + id: string
+    + promo_id: string
+    + customer_id: string
+    + promo_code: string
+    + promo_name: string
+    + promo_type: string
+    + promo_value: string
+    + promo_start_date: datetime
+    + promo_end_date: datetime
+    + promo_status: boolean
+    + promo_description: string
+    + promo_image: string
+    + promo_terms: string
+    --
+    + created_at: datetime
+    + updated_at: datetime
+    + deleted_at: datetime
+}
+
+class "Transaction" as T {
+    + id: string
+    + customer_id: string
+    + partner_id: string
+    + is_cashback_applied: boolean
+    + cashback_amount: double
+    + transaction_amount: double
+    + transaction_quantity: int
+    + tier_reward_amount: double
+    + tier: int
+    + total_reward_amount: double
+    --
+    + created_at: datetime
+    + updated_at: datetime
+    + deleted_at: datetime
+}
+
+class "Transaction History" as TH {
+    + id: string
+    + transaction_id: string
+    + customer_id: string
+    + partner_id: string
+    + is_cashback_applied: boolean
+    + cashback_amount: double
+    + transaction_amount: double
+    + transaction_quantity: int
+    + tier_reward_amount: double
+    + tier: int
+    + total_reward_amount: double
+    --
+    + created_at: datetime
+    + updated_at: datetime
+    + deleted_at: datetime
+}
+
+L -- C
+L -- LR
+L -- LH
+PRD }-- P
+PRD -- PR
+PRD -- PRDH
+T -- TH
+T }-- C
+T }-- P
+
