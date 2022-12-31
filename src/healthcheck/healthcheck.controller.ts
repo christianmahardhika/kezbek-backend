@@ -6,7 +6,7 @@ import {
   MicroserviceHealthIndicator,
   TypeOrmHealthIndicator,
 } from '@nestjs/terminus';
-import { configuration } from 'src/config/config';
+import { configuration } from '../config/config';
 
 @Controller('healthcheck')
 export class HealthcheckController {

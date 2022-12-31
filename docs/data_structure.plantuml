@@ -71,7 +71,7 @@ class "Promo Redemption" as PRD {
     + promo_id: string
     + partner_id: string
     + promo_code: string
-    + promo_status: boolean
+    + is_active: boolean
     + promo_description: text
     + promo_image: string
     + promo_terms: text

@@ -35,10 +35,9 @@ install [latest nodeJS](https://nodejs.org/en/download/)
 
 docker compose -f ./Deploy/docker-compose.yml up -d
 
-# Run the app with docker
-docker build -f ./Deploy/Dockerfile -t kezbek-backend .
+if docker compose is finished, you can run the app by click this url the OPEN API documentation at
 
-docker run -p 3000:3000 kezbek-backend
+localhost:3000/api
 
 # development
 $ npm run start
