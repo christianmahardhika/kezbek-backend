@@ -5,7 +5,6 @@ import { HealthcheckModule } from './healthcheck/healthcheck.module';
 import { LoyaltyModule } from './loyalty/loyalty.module';
 import { PromoModule } from './promo/promo.module';
 import { TransactionModule } from './transaction/transaction.module';
-import { LoyaltyModule } from './loyalty/loyalty.module';
 
 @Module({
   imports: [HealthcheckModule, LoyaltyModule, PromoModule, TransactionModule],
