@@ -1,20 +1,18 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoyaltyController } from './loyalty.controller';
 import { LoyaltyService } from './loyalty.service';
 
-describe('LoyaltyController', () => {
-  let controller: LoyaltyController;
+describe('LoyaltyService', () => {
+  let service: LoyaltyService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [LoyaltyController],
       providers: [LoyaltyService],
     }).compile();
 
-    controller = module.get<LoyaltyController>(LoyaltyController);
+    service = module.get<LoyaltyService>(LoyaltyService);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(service).toBeDefined();
   });
 });
