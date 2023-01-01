@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePromoDto } from './dto/create-promo.dto';
 import { UpdatePromoDto } from './dto/update-promo.dto';
-import { CreatePromo, Promo } from './entities/promo.entity';
+import { Promo } from './entities/promo.entity';
 
 @Injectable()
 export class PromoService {
-  create(createPromoDto: CreatePromoDto): CreatePromo {
+  create(createPromoDto: CreatePromoDto): Promo {
     return {
       id: createPromoDto.id,
       promo_id: createPromoDto.promo_id,
@@ -17,6 +17,9 @@ export class PromoService {
       promo_terms: createPromoDto.promo_terms,
       promo_start_date: createPromoDto.promo_start_date,
       promo_end_date: createPromoDto.promo_end_date,
+      created_at: new Date(),
+      updated_at: new Date(),
+      deleted_at: new Date(),
     };
   }
 
@@ -72,11 +75,11 @@ export class PromoService {
       promo_end_date: new Date(),
       created_at: new Date(),
       updated_at: new Date(),
-      deleted_at: new Date(),
+      deleted_at: null,
     };
   }
 
-  update(id: number, updatePromoDto: UpdatePromoDto): CreatePromo {
+  update(id: number, updatePromoDto: UpdatePromoDto): Promo {
     return {
       id: updatePromoDto.id,
       promo_id: updatePromoDto.promo_id,
@@ -88,6 +91,9 @@ export class PromoService {
       promo_terms: updatePromoDto.promo_terms,
       promo_start_date: updatePromoDto.promo_start_date,
       promo_end_date: updatePromoDto.promo_end_date,
+      created_at: new Date(),
+      updated_at: new Date(),
+      deleted_at: null,
     };
   }
 

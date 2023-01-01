@@ -12,7 +12,6 @@ import {
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
-  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
   ApiOperation,
@@ -27,8 +26,8 @@ import {
   ErrorResponseUnauthorized,
 } from './dto/base-error-response.dto';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { GetTransactionHistoryDTO } from './dto/get-transaction-dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { Transaction, TransactionHistory } from './entities/transaction.entity';
 import { TransactionService } from './transaction.service';
 @ApiBearerAuth()
 @ApiTags('transaction')
@@ -38,11 +37,7 @@ export class TransactionController {
 
   @Post()
   @ApiOperation({ summary: 'Create Transaction' })
-  @ApiBody({ type: CreateTransactionDto })
-  @ApiCreatedResponse({
-    description: 'The record has been successfully created.',
-    type: CreateTransactionDto,
-  })
+  @ApiBody({ type: Transaction })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
     type: ErrorResponseForbidden,
@@ -59,7 +54,7 @@ export class TransactionController {
     description: 'Internal Server Error',
     type: ErrorResponseInternalServerError,
   })
-  create(@Body() createTransactionDto: CreateTransactionDto) {
+  create(@Body() createTransactionDto: CreateTransactionDto): Transaction {
     return this.transactionService.create(createTransactionDto);
   }
 
@@ -87,7 +82,7 @@ export class TransactionController {
     @Query('start_date') start_date: Date,
     @Query('end_date') end_date: Date,
     @Query('partner_id') partner_id: string,
-  ): GetTransactionHistoryDTO[] {
+  ): TransactionHistory[] {
     return this.transactionService.findByDateAndPartnerID(
       start_date,
       end_date,

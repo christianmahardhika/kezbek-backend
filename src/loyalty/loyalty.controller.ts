@@ -28,6 +28,7 @@ import {
 import { CreateLoyaltyDto } from './dto/create-loyalty.dto';
 import { GetLoyaltyDTO } from './dto/get-loyalty.dto';
 import { UpdateLoyaltyDto } from './dto/update-loyalty.dto';
+import { Loyalty } from './entities/loyalty.entity';
 import { LoyaltyService } from './loyalty.service';
 
 @ApiBearerAuth()
@@ -63,7 +64,7 @@ export class LoyaltyController {
 
   @Get('customer')
   @ApiOperation({ summary: 'Get loyalty by customer ID' })
-  @ApiOkResponse({ description: 'Loyalty found', type: GetLoyaltyDTO })
+  @ApiOkResponse({ description: 'Loyalty found', type: Loyalty })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
     type: ErrorResponseForbidden,
@@ -81,7 +82,7 @@ export class LoyaltyController {
     type: ErrorResponseInternalServerError,
   })
   @ApiQuery({ name: 'ID', type: String, required: true })
-  getByCustomerID(@Query('ID') id: string) {
+  getByCustomerID(@Query('ID') id: string): Loyalty {
     return this.loyaltyService.getByCustomerID(id);
   }
 }

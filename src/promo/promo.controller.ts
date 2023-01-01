@@ -10,14 +10,12 @@ import {
   Query,
 } from '@nestjs/common';
 import {
-  ApiAcceptedResponse,
   ApiBadRequestResponse,
   ApiBearerAuth,
   ApiBody,
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
-  ApiOkResponse,
   ApiOperation,
   ApiParam,
   ApiQuery,
@@ -31,9 +29,8 @@ import {
   ErrorResponseUnauthorized,
 } from './dto/base-error-response.dto';
 import { CreatePromoDto } from './dto/create-promo.dto';
-import { GetPromoDTO } from './dto/get-promo.dto';
 import { UpdatePromoDto } from './dto/update-promo.dto';
-import { CreatePromo, Promo } from './entities/promo.entity';
+import { Promo } from './entities/promo.entity';
 import { PromoService } from './promo.service';
 
 @ApiBearerAuth()
@@ -45,7 +42,6 @@ export class PromoController {
   @Post()
   @ApiOperation({ summary: 'Create a new promo' })
   @ApiBody({ type: CreatePromoDto })
-  @ApiCreatedResponse({ type: CreatePromoDto })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
     type: ErrorResponseForbidden,
@@ -62,13 +58,12 @@ export class PromoController {
     description: 'Internal Server Error',
     type: ErrorResponseInternalServerError,
   })
-  create(@Body() createPromoDto: CreatePromoDto): CreatePromo {
+  create(@Body() createPromoDto: CreatePromoDto): Promo {
     return this.promoService.create(createPromoDto);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get list promo' })
-  @ApiOkResponse({ type: [GetPromoDTO] })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
     type: ErrorResponseForbidden,
@@ -92,7 +87,6 @@ export class PromoController {
   @Get(':id')
   @ApiOperation({ summary: 'Get a promo' })
   @ApiParam({ name: 'id', type: String })
-  @ApiOkResponse({ type: GetPromoDTO })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
     type: ErrorResponseForbidden,
@@ -136,14 +130,13 @@ export class PromoController {
   update(
     @Param('id') id: string,
     @Body() updatePromoDto: UpdatePromoDto,
-  ): CreatePromo {
+  ): Promo {
     return this.promoService.update(+id, updatePromoDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete a promo' })
   @ApiParam({ name: 'id', type: 'string' })
-  @ApiAcceptedResponse({ type: String })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
     type: ErrorResponseForbidden,
@@ -166,7 +159,6 @@ export class PromoController {
 
   @Get('promo_code')
   @ApiOperation({ summary: 'Get promo code' })
-  @ApiOkResponse({ type: [GetPromoDTO] })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
     type: ErrorResponseForbidden,

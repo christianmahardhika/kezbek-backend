@@ -1,19 +1,33 @@
 import { Injectable } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { GetTransactionHistoryDTO } from './dto/get-transaction-dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { Transaction, TransactionHistory } from './entities/transaction.entity';
 
 @Injectable()
 export class TransactionService {
-  create(createTransactionDto: CreateTransactionDto) {
-    return 'This action adds a new transaction';
+  create(createTransactionDto: CreateTransactionDto): Transaction {
+    return {
+      id: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
+      customer_id: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
+      partner_id: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1231c',
+      is_cashback_applied: true,
+      cashback_amount: 1000,
+      transaction_amount: 100000,
+      transaction_quantity: 1,
+      tier_reward_amount: 1000,
+      tier: 1,
+      total_reward_amount: 1000,
+      created_at: new Date(),
+      updated_at: new Date(),
+      deleted_at: null,
+    };
   }
 
   findByDateAndPartnerID(
     start_date: Date,
     end_date: Date,
     partner_id: string,
-  ): GetTransactionHistoryDTO[] {
+  ): TransactionHistory[] {
     return [
       {
         id: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
