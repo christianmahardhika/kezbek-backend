@@ -9,20 +9,8 @@ export class LoyaltyService {
     return 'This action adds a new loyalty';
   }
 
-  findAll() {
-    return `This action returns all loyalty`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} loyalty`;
-  }
-
-  update(id: number, updateLoyaltyDto: UpdateLoyaltyDto) {
-    return `This action updates a #${id} loyalty`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} loyalty`;
+  update(updateLoyaltyDto: UpdateLoyaltyDto) {
+    return `This action updates a #${updateLoyaltyDto.id} loyalty`;
   }
 
   getByCustomerID(id: string): Loyalty {
