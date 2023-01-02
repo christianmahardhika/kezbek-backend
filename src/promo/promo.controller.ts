@@ -2,9 +2,7 @@ import {
   Body,
   Controller,
   DefaultValuePipe,
-  Delete,
   Get,
-  Param,
   Patch,
   Post,
   Query,
@@ -16,8 +14,8 @@ import {
   ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiInternalServerErrorResponse,
+  ApiOkResponse,
   ApiOperation,
-  ApiParam,
   ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse,
@@ -28,9 +26,14 @@ import {
   ErrorResponseInternalServerError,
   ErrorResponseUnauthorized,
 } from './dto/base-error-response.dto';
+import {
+  SuccessCreateResponse,
+  SuccessGetAllResponse,
+  SuccessUpdateResponse,
+  SucessGetOneResponse,
+} from './dto/base-response.dto';
 import { CreatePromoDto } from './dto/create-promo.dto';
 import { UpdatePromoDto } from './dto/update-promo.dto';
-import { Promo } from './entities/promo.entity';
 import { PromoService } from './promo.service';
 
 @ApiBearerAuth()
@@ -42,6 +45,7 @@ export class PromoController {
   @Post()
   @ApiOperation({ summary: 'Create a new promo' })
   @ApiBody({ type: CreatePromoDto })
+  @ApiCreatedResponse({ type: SuccessCreateResponse })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
     type: ErrorResponseForbidden,
@@ -58,12 +62,14 @@ export class PromoController {
     description: 'Internal Server Error',
     type: ErrorResponseInternalServerError,
   })
-  create(@Body() createPromoDto: CreatePromoDto): Promo {
-    return this.promoService.create(createPromoDto);
+  async create(@Body() createPromoDto: CreatePromoDto) {
+    const result = await this.promoService.create(createPromoDto);
+    return new SuccessCreateResponse(201, 'Promo created successfully', result);
   }
 
   @Get()
   @ApiOperation({ summary: 'Get list promo' })
+  @ApiOkResponse({ type: SuccessGetAllResponse })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
     type: ErrorResponseForbidden,
@@ -80,36 +86,18 @@ export class PromoController {
     description: 'Internal Server Error',
     type: ErrorResponseInternalServerError,
   })
-  findAll(): Promo[] {
-    return this.promoService.findAll();
-  }
-
-  @Get(':id')
-  @ApiOperation({ summary: 'Get a promo' })
-  @ApiParam({ name: 'id', type: String })
-  @ApiForbiddenResponse({
-    description: 'Forbidden.',
-    type: ErrorResponseForbidden,
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    type: ErrorResponseUnauthorized,
-  })
-  @ApiBadRequestResponse({
-    description: 'Bad Request',
-    type: ErrorResponseBadRequest,
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal Server Error',
-    type: ErrorResponseInternalServerError,
-  })
-  findOne(@Param('id') id: string): Promo {
-    return this.promoService.findOne(id);
+  async findAll() {
+    const result = await this.promoService.findAll();
+    return new SuccessGetAllResponse(
+      200,
+      'Promo retrieved successfully',
+      result,
+    );
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update a promo' })
-  @ApiBody({ type: UpdatePromoDto })
+  @ApiBody({ type: SuccessUpdateResponse })
   @ApiCreatedResponse({ type: UpdatePromoDto })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
@@ -127,38 +115,18 @@ export class PromoController {
     description: 'Internal Server Error',
     type: ErrorResponseInternalServerError,
   })
-  update(
-    @Param('id') id: string,
-    @Body() updatePromoDto: UpdatePromoDto,
-  ): Promo {
-    return this.promoService.update(+id, updatePromoDto);
-  }
-
-  @Delete(':id')
-  @ApiOperation({ summary: 'Delete a promo' })
-  @ApiParam({ name: 'id', type: 'string' })
-  @ApiForbiddenResponse({
-    description: 'Forbidden.',
-    type: ErrorResponseForbidden,
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    type: ErrorResponseUnauthorized,
-  })
-  @ApiBadRequestResponse({
-    description: 'Bad Request',
-    type: ErrorResponseBadRequest,
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal Server Error',
-    type: ErrorResponseInternalServerError,
-  })
-  remove(@Param('id') id: string): String {
-    return this.promoService.remove(+id);
+  async update(@Body() updatePromoDto: UpdatePromoDto) {
+    const result = await this.promoService.update(updatePromoDto);
+    return new SuccessCreateResponse(
+      201,
+      `Success update new record id ${result.id}`,
+      result,
+    );
   }
 
   @Get('promo_code')
   @ApiOperation({ summary: 'Get promo code' })
+  @ApiOkResponse({ type: SucessGetOneResponse })
   @ApiForbiddenResponse({
     description: 'Forbidden.',
     type: ErrorResponseForbidden,
@@ -176,9 +144,14 @@ export class PromoController {
     type: ErrorResponseInternalServerError,
   })
   @ApiQuery({ name: 'promo_code', type: String })
-  getByPromoCode(
+  async getByPromoCode(
     @Query('promo_code', new DefaultValuePipe({})) promo_code: string,
-  ): Promo {
-    return this.promoService.getPromoCode(promo_code);
+  ) {
+    const result = await this.promoService.getPromoCode(promo_code);
+    return new SucessGetOneResponse(
+      200,
+      'Promo code retrieved successfully',
+      result,
+    );
   }
 }

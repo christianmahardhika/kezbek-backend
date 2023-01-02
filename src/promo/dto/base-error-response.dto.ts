@@ -1,18 +1,25 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber, IsString } from 'class-validator';
 
 export class BaseErrorResponse {
+  constructor(statusCode: number, errorMessage: string) {
+    this.statusCode = statusCode;
+    this.errorMessage = errorMessage;
+  }
+  @IsNumber()
   statusCode: number;
+  @IsString()
   errorMessage: string;
 }
 
-export class ErrorResponseForbidden {
+export class ErrorResponseForbidden extends BaseErrorResponse {
   @ApiProperty({ example: 403, description: 'Forbidden Status Code' })
   statusCode: number;
   @ApiProperty({ example: 'Forbidden', description: 'Forbidden Error Message' })
   errorMessage: string;
 }
 
-export class ErrorResponseUnauthorized {
+export class ErrorResponseUnauthorized extends BaseErrorResponse {
   @ApiProperty({ example: 401, description: 'Unauthorized Status Code' })
   statusCode: number;
   @ApiProperty({
@@ -32,14 +39,25 @@ export class ErrorResponseBadRequest {
   errorMessage: string;
 }
 
-export class ErrorResponseInternalServerError {
-    @ApiProperty({ example: 500, description: 'Internal Server Error Status Code' })
-    statusCode: number;
-    @ApiProperty({
-        example: 'Internal Server Error',
-        description: 'Internal Server Error Error Message',
-    })
-    errorMessage: string;
-    }
+export class ErrorResponseNotFound extends BaseErrorResponse {
+  @ApiProperty({ example: 404, description: 'Not Found Status Code' })
+  statusCode: number;
+  @ApiProperty({
+    example: 'Not Found',
+    description: 'Not Found Error Message',
+  })
+  errorMessage: string;
+}
 
-    
+export class ErrorResponseInternalServerError {
+  @ApiProperty({
+    example: 500,
+    description: 'Internal Server Error Status Code',
+  })
+  statusCode: number;
+  @ApiProperty({
+    example: 'Internal Server Error',
+    description: 'Internal Server Error Error Message',
+  })
+  errorMessage: string;
+}

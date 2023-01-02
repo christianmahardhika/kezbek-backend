@@ -8,11 +8,6 @@ export class Promo {
   id: string;
   @ApiProperty({
     example: '1dqwe2-123123-123123-123123',
-    description: 'The uuid of the Promo',
-  })
-  promo_id: string;
-  @ApiProperty({
-    example: '1dqwe2-123123-123123-123123',
     description: 'The uuid of the Partner',
   })
   partner_id: string;
