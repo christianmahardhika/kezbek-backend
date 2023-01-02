@@ -1,5 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { pick } from 'lodash';
+import {
+  SuccessCreateResponse,
+  SucessGetOneResponse,
+} from './dto/base-response.dto';
 import { CreateLoyaltyDto } from './dto/create-loyalty.dto';
 import { UpdateLoyaltyDto } from './dto/update-loyalty.dto';
 import { Loyalty } from './entities/loyalty.entity';
@@ -12,7 +16,6 @@ describe('LoyaltyController', () => {
 
   const mockLoyaltyService = {
     create: jest.fn(() => Promise.resolve(mockLoyaltyEntity)),
-    findAll: jest.fn(() => Promise.resolve(mockLoyaltyEntity)),
     update: jest.fn(() => Promise.resolve(mockLoyaltyEntity)),
     getByCustomerID: jest.fn(() => Promise.resolve(mockLoyaltyEntity)),
   };
@@ -62,11 +65,17 @@ describe('LoyaltyController', () => {
         .spyOn(mockLoyaltyService, 'create')
         .mockResolvedValue(mockLoyaltyEntity as Loyalty);
 
+      const mockResponse = new SuccessCreateResponse(
+        201,
+        'Loyalty created successfully',
+        mockLoyaltyEntity,
+      );
+
       // execute the method
       const result = await controller.create(createDto);
 
       // assert the result
-      expect(result).toEqual(mockLoyaltyEntity);
+      expect(result).toEqual(mockResponse);
       expect(createLoyaltyOnSpy).toHaveBeenCalledTimes(1);
       expect(createLoyaltyOnSpy).toHaveBeenCalledWith(createDto);
     });
@@ -79,16 +88,22 @@ describe('LoyaltyController', () => {
         .spyOn(mockLoyaltyService, 'getByCustomerID')
         .mockResolvedValue(mockLoyaltyEntity as Loyalty);
 
+      const mockResponse = new SucessGetOneResponse(
+        200,
+        'Loyalty found',
+        mockLoyaltyEntity,
+      );
+
       // execute the method
       const result = await controller.getByCustomerID(
-        '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
+        mockLoyaltyEntity.customer_id,
       );
 
       // assert the result
-      expect(result).toEqual(mockLoyaltyEntity);
+      expect(result).toEqual(mockResponse);
       expect(findAllLoyaltyOnSpy).toHaveBeenCalledTimes(1);
       expect(findAllLoyaltyOnSpy).toHaveBeenCalledWith(
-        '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
+        mockLoyaltyEntity.customer_id,
       );
     });
   });
@@ -109,11 +124,17 @@ describe('LoyaltyController', () => {
         .spyOn(mockLoyaltyService, 'update')
         .mockResolvedValue(mockLoyaltyEntity as Loyalty);
 
+      const mockResponse = new SuccessCreateResponse(
+        201,
+        'Loyalty updated successfully',
+        mockLoyaltyEntity,
+      );
+
       // execute the method
       const result = await controller.update(updateDto);
 
       // assert the result
-      expect(result).toEqual(mockLoyaltyEntity);
+      expect(result).toEqual(mockResponse);
       expect(updateLoyaltyOnSpy).toHaveBeenCalledTimes(1);
       expect(updateLoyaltyOnSpy).toHaveBeenCalledWith(updateDto);
     });

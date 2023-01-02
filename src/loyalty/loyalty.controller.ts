@@ -34,8 +34,14 @@ export class LoyaltyController {
   @Post()
   @ApiOperation({ summary: 'Create a new loyalty' })
   @ApiCreatedResponse({ type: SuccessCreateResponse })
-  create(@Body() createLoyaltyDto: CreateLoyaltyDto) {
-    return this.loyaltyService.create(createLoyaltyDto);
+  async create(@Body() createLoyaltyDto: CreateLoyaltyDto) {
+    const result = await this.loyaltyService.create(createLoyaltyDto);
+
+    return new SuccessCreateResponse(
+      201,
+      'Loyalty created successfully',
+      result,
+    );
   }
 
   @Patch()
@@ -44,8 +50,13 @@ export class LoyaltyController {
     description: 'Loyalty updated',
     type: SuccessCreateResponse,
   })
-  update(@Body() updateLoyaltyDto: UpdateLoyaltyDto) {
-    return this.loyaltyService.update(updateLoyaltyDto);
+  async update(@Body() updateLoyaltyDto: UpdateLoyaltyDto) {
+    const result = await this.loyaltyService.update(updateLoyaltyDto);
+    return new SuccessCreateResponse(
+      201,
+      'Loyalty updated successfully',
+      result,
+    );
   }
 
   @Get('customer')
@@ -68,7 +79,8 @@ export class LoyaltyController {
     type: ErrorResponseInternalServerError,
   })
   @ApiQuery({ name: 'ID', type: String, required: true })
-  getByCustomerID(@Query('ID') id: string) {
-    return this.loyaltyService.getByCustomerID(id);
+  async getByCustomerID(@Query('ID') id: string) {
+    const result = await this.loyaltyService.getByCustomerID(id);
+    return new SucessGetOneResponse(200, 'Loyalty found', result);
   }
 }
