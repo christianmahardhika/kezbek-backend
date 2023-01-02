@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { CreatePromoDto } from './dto/create-promo.dto';
 import { UpdatePromoDto } from './dto/update-promo.dto';
 import { Promo } from './entities/promo.entity';
@@ -7,7 +8,7 @@ import { Promo } from './entities/promo.entity';
 export class PromoService {
   create(createPromoDto: CreatePromoDto): Promo {
     return {
-      id: createPromoDto.id,
+      id: randomUUID(),
       promo_id: createPromoDto.promo_id,
       partner_id: createPromoDto.partner_id,
       promo_code: createPromoDto.promo_code,
@@ -79,7 +80,7 @@ export class PromoService {
     };
   }
 
-  update(id: number, updatePromoDto: UpdatePromoDto): Promo {
+  update(updatePromoDto: UpdatePromoDto): Promo {
     return {
       id: updatePromoDto.id,
       promo_id: updatePromoDto.promo_id,

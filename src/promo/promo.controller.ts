@@ -127,11 +127,8 @@ export class PromoController {
     description: 'Internal Server Error',
     type: ErrorResponseInternalServerError,
   })
-  update(
-    @Param('id') id: string,
-    @Body() updatePromoDto: UpdatePromoDto,
-  ): Promo {
-    return this.promoService.update(+id, updatePromoDto);
+  update(@Body() updatePromoDto: UpdatePromoDto): Promo {
+    return this.promoService.update(updatePromoDto);
   }
 
   @Delete(':id')
