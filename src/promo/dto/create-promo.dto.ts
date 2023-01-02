@@ -1,9 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
-import {
-  IsDateString,
-  IsUrl,
-} from 'class-validator/types/decorator/decorators';
+import { IsDateString, IsString, IsUrl } from 'class-validator';
 
 export class CreatePromoDto {
   @ApiProperty({

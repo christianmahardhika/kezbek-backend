@@ -1,7 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator/types/decorator/decorators';
+import { IsNumber, IsString } from 'class-validator';
 
 export class BaseErrorResponse {
+  constructor(statusCode: number, errorMessage: string) {
+    this.statusCode = statusCode;
+    this.errorMessage = errorMessage;
+  }
   @IsNumber()
   statusCode: number;
   @IsString()

@@ -5,7 +5,7 @@ import {
   IsString,
   IsUrl,
   IsUUID,
-} from 'class-validator/types/decorator/decorators';
+} from 'class-validator';
 import { CreatePromoDto } from './create-promo.dto';
 
 export class UpdatePromoDto extends PartialType(CreatePromoDto) {
