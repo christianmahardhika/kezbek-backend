@@ -32,14 +32,20 @@ export class ErrorResponseBadRequest {
   errorMessage: string;
 }
 
-export class ErrorResponseInternalServerError {
-    @ApiProperty({ example: 500, description: 'Internal Server Error Status Code' })
-    statusCode: number;
-    @ApiProperty({
-        example: 'Internal Server Error',
-        description: 'Internal Server Error Error Message',
-    })
-    errorMessage: string;
-    }
-
-    
+export class ErrorResponseInternalServerError extends BaseErrorResponse {
+  constructor(errorMessage) {
+    super();
+    this.statusCode = 500;
+    this.errorMessage = errorMessage;
+  }
+  @ApiProperty({
+    example: 500,
+    description: 'Internal Server Error Status Code',
+  })
+  statusCode: number;
+  @ApiProperty({
+    example: 'Internal Server Error',
+    description: 'Internal Server Error Error Message',
+  })
+  errorMessage: string;
+}

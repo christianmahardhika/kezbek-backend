@@ -25,9 +25,16 @@ import {
   ErrorResponseInternalServerError,
   ErrorResponseUnauthorized,
 } from './dto/base-error-response.dto';
-import { CreateTransactionDto } from './dto/create-transaction.dto';
+import {
+  SuccessCreateResponse,
+  SuccessGetAllResponse,
+} from './dto/base-response.dto';
+import {
+  CreateTransactionDto,
+  SubmitTransactionDto,
+} from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { Transaction, TransactionHistory } from './entities/transaction.entity';
+import { Transaction } from './entities/transaction.entity';
 import { TransactionService } from './transaction.service';
 @ApiBearerAuth()
 @ApiTags('transaction')
@@ -54,8 +61,31 @@ export class TransactionController {
     description: 'Internal Server Error',
     type: ErrorResponseInternalServerError,
   })
-  create(@Body() createTransactionDto: CreateTransactionDto): Transaction {
-    return this.transactionService.create(createTransactionDto);
+  async create(@Body() createTransactionDto: CreateTransactionDto) {
+    try {
+      const result = await this.transactionService.create(createTransactionDto);
+      return new SuccessCreateResponse(
+        201,
+        'Transaction created successfully',
+        result,
+      );
+    } catch (error) {
+      console.log(error);
+      return new ErrorResponseInternalServerError('Internal Server Error');
+    }
+  }
+  @Post('submit')
+  @ApiOperation({ summary: 'Submit Transaction' })
+  async submitTransaction(@Body() submitTransactionDto: SubmitTransactionDto) {
+    try {
+      const result = await this.transactionService.submitTransaction(
+        submitTransactionDto,
+      );
+      return new SuccessCreateResponse(202, 'Cashback being processed', result);
+    } catch (error) {
+      console.log(error);
+      return new ErrorResponseInternalServerError('Internal Server Error');
+    }
   }
 
   @Get('history')
@@ -78,16 +108,22 @@ export class TransactionController {
     type: 'string',
     description: 'Partner ID',
   })
-  findByDateAndPartnerID(
+  async findByDateAndPartnerID(
     @Query('start_date') start_date: Date,
     @Query('end_date') end_date: Date,
     @Query('partner_id') partner_id: string,
-  ): TransactionHistory[] {
-    return this.transactionService.findByDateAndPartnerID(
-      start_date,
-      end_date,
-      partner_id,
-    );
+  ) {
+    try {
+      const result = await this.transactionService.findByDateAndPartnerID(
+        start_date,
+        end_date,
+        partner_id,
+      );
+      return new SuccessGetAllResponse(200, 'Transaction found', result);
+    } catch (error) {
+      console.log(error);
+      return new ErrorResponseInternalServerError('Internal Server Error');
+    }
   }
 
   @Get(':id')
