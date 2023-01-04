@@ -12,8 +12,8 @@ provider:
   stage: prod
   timeout: 20
   apiGateway:
-    restApiId: ${{ secrets.AWS_REST_API_ID }}
-    restApiRootResourceId: ${{ secrets.AWS_REST_API_ROOT_RESOURCE_ID }}
+    restApiId: ${param:AWS_REST_API_ID}
+    restApiRootResourceId: ${param:AWS_REST_API_ROOT_RESOURCE_ID}
 
 functions:
   api:
