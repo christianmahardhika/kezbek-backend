@@ -19,5 +19,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm test
+      - run: cd app/loyalty && npm ci
+      - run: cd app/loyalty && npm test
+      - run: cd app/transaction && npm ci
+      - run: cd app/transaction && npm test
+      - run: cd app/promo && npm ci
+      - run: cd app/promo && npm test
