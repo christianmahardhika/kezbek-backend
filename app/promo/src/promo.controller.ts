@@ -38,7 +38,7 @@ import { PromoService } from './promo.service';
 
 @ApiBearerAuth()
 @ApiTags('Promo')
-@Controller('promo')
+@Controller()
 export class PromoController {
   constructor(private readonly promoService: PromoService) {}
 
