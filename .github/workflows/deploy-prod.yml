@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: 18.x
 
-       - run: cd app/loyalty && npm ci
+      - run: cd app/loyalty && npm ci
       - run: cd app/loyalty && npm run test:cov
       - run: cd app/transaction && npm ci
       - run: cd app/transaction && npm run test:cov
