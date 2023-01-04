@@ -1,0 +1,21 @@
+service: kezbek-transaction
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-jetpack
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: ap-southeast-3 # Jakarta/Indonesia
+  stage: prod
+  timeout: 20
+
+functions:
+  api:
+    handler: dist/lambda.handler
+    events:
+      - http:
+          method: any
+          path: /transaction/

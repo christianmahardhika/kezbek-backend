@@ -83,7 +83,7 @@ describe('PromoController', () => {
   it('should be defined', () => {
     expect(controller).toBeDefined();
   });
-  
+
   describe('Create Promo API', () => {
     it('should return a promo entity', async () => {
       const createDto = pick(mockPromoEntity, [

@@ -1,0 +1,9 @@
+services:
+  transaction:
+    path: app/transaction
+
+  loyalty:
+    path: app/loyalty
+
+  promo:
+    path: app/promo

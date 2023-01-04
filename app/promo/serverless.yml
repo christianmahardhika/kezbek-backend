@@ -1,4 +1,4 @@
-service: kezbek-backend
+service: kezbek-promo
 
 frameworkVersion: '3'
 
@@ -18,4 +18,4 @@ functions:
     events:
       - http:
           method: any
-          path: /{proxy+}
+          path: /promo/

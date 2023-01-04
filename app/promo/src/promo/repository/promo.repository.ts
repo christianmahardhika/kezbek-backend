@@ -22,7 +22,6 @@ export class PromoRepository extends Repository<Promo> {
     return await this.save(updatePromoDto);
   }
 
-
   async findAll(): Promise<Promo[]> {
     return await this.find();
   }

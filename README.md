@@ -37,7 +37,7 @@ docker compose -f ./Deploy/docker-compose.yml up -d
 
 if docker compose is finished, you can run the app by click this url the OPEN API documentation at
 
-localhost:3000/api
+localhost:3001/api-document (loyalty service) or localhost:3002/api-document (promo service) or localhost:3003/api-document (transaction service)
 
 # development
 $ npm run start
