@@ -21,14 +21,6 @@ export class HealthcheckController {
     return this.healthCheckService.check([
       () => this.db.pingCheck('postgres', { timeout: 1500 }),
       () =>
-        this.microservice.pingCheck('redis', {
-          transport: Transport.REDIS,
-          options: {
-            host: configuration.GetRedisConfig().host,
-            port: configuration.GetRedisConfig().port,
-          },
-        }),
-      () =>
         this.microservice.pingCheck('rabbitmq', {
           transport: Transport.RMQ,
           options: {

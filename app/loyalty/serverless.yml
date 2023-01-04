@@ -11,6 +11,9 @@ provider:
   region: ap-southeast-3 # Jakarta/Indonesia
   stage: prod
   timeout: 20
+  apiGateway:
+    restApiId: ${{ secrets.AWS_REST_API_ID }}
+    restApiRootResourceId: ${{ secrets.AWS_REST_API_ROOT_RESOURCE_ID }}
 
 functions:
   api:
@@ -18,4 +21,4 @@ functions:
     events:
       - http:
           method: any
-          path: /loyalty/
+          path: loyalty
