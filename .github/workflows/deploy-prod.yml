@@ -25,9 +25,9 @@ jobs:
       - run: cd app/promo && npm ci
       - run: cd app/promo && npm run test:cov
 
-      - run: cd app/loyalty npm run build
-      - run: cd app/transaction npm run build
-      - run: cd app/promo npm run build
+      - run: cd app/loyalty && npm run build
+      - run: cd app/transaction && npm run build
+      - run: cd app/promo && npm run build
 
       - name: serverless deploy
         uses: serverless/github-action@v3.1

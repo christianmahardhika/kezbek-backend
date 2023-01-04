@@ -28,9 +28,9 @@ jobs:
       # See https://github.com/codecov/example-ci/blob/main/.github/workflows/ci.yml
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
-      - run: cd app/loyalty npm run build
-      - run: cd app/transaction npm run build
-      - run: cd app/promo npm run build
+      - run: cd app/loyalty && npm run build
+      - run: cd app/transaction && npm run build
+      - run: cd app/promo && npm run build
 
       - name: serverless deploy
         uses: serverless/github-action@v3.1
