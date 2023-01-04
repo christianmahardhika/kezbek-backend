@@ -38,7 +38,7 @@ import { Transaction } from './entities/transaction.entity';
 import { TransactionService } from './transaction.service';
 @ApiBearerAuth()
 @ApiTags('transaction')
-@Controller('transaction')
+@Controller()
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
 

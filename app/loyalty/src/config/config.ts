@@ -27,6 +27,8 @@ type RabbitMQConfig = {
   username: string;
   password: string;
   queue: string;
+  queue_promo: string;
+  queue_transaction: string;
   exchange: string;
   routingKey: string;
   queueDurable: boolean;
@@ -78,6 +80,9 @@ class Config {
       username: process.env.RABBITMQ_USERNAME || 'rabbitmq',
       password: process.env.RABBITMQ_PASSWORD || 'rabbitmq',
       queue: process.env.RABBITMQ_QUEUE || 'test',
+      queue_promo: process.env.RABBITMQ_QUEUE_PROMO || 'promo',
+      queue_transaction:
+        process.env.RABBITMQ_QUEUE_TRANSACTION || 'transaction',
       exchange: process.env.RABBITMQ_EXCHANGE,
       routingKey: process.env.RABBITMQ_ROUTINGKEY,
       queueDurable: process.env.RABBITMQ_QUEUE_DURABLE === 'true',

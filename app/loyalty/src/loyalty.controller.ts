@@ -27,7 +27,7 @@ import { LoyaltyService } from './loyalty.service';
 
 @ApiBearerAuth()
 @ApiTags('Loyalty')
-@Controller('loyalty')
+@Controller()
 export class LoyaltyController {
   constructor(private readonly loyaltyService: LoyaltyService) {}
 

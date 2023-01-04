@@ -2,13 +2,13 @@ import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { AppModule } from './app.module';
 import { configuration } from './config/config';
+import { TransactionModule } from './transaction.module';
 
 async function bootstrap() {
   configuration.New();
   const logger = new Logger('Transaction Service');
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(TransactionModule);
   const config = new DocumentBuilder()
     .setTitle('Kezbek Documentation - Transaction Service')
     .setDescription('Kezbek API documentation for developers')
