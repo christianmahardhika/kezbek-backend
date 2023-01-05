@@ -10,23 +10,22 @@ export class TransactionRepository extends Repository<Transaction> {
     super(Transaction, dataSource.createEntityManager());
   }
 
-  createTransaction(
+  async createTransaction(
     createTransactionDto: CreateTransactionDto,
   ): Promise<Transaction> {
-    return this.save(createTransactionDto);
+    return await this.save(createTransactionDto);
   }
 
-  updateTransaction(
+  async updateTransaction(
     updateTransaction: UpdateTransactionDto,
   ): Promise<Transaction> {
-    return this.save(updateTransaction);
+    return await this.save(updateTransaction);
   }
 
   async findLastTransactionByCustomerEmail(
     customer_email: string,
   ): Promise<Transaction> {
-    return this.findOne({
-      select: ['id', 'customer_email', 'partner_id', 'created_at'],
+    return await this.findOne({
       where: { customer_email },
       order: { created_at: 'DESC' },
     });

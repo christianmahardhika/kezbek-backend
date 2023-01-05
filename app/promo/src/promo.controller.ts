@@ -135,7 +135,9 @@ export class PromoController {
         data.trans_amount,
       );
       this.logger.log(
-        `Message [check-cashback-promo] successfully send ${result}`,
+        `Message [check-cashback-promo] successfully send ${JSON.stringify(
+          result,
+        )}`,
       );
       return result;
     } catch (error) {

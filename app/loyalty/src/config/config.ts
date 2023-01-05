@@ -29,6 +29,7 @@ type RabbitMQConfig = {
   queue: string;
   queue_promo: string;
   queue_transaction: string;
+  queue_loyalty: string;
   exchange: string;
   routingKey: string;
   queueDurable: boolean;
@@ -83,6 +84,7 @@ class Config {
       queue_promo: process.env.RABBITMQ_QUEUE_PROMO || 'promo',
       queue_transaction:
         process.env.RABBITMQ_QUEUE_TRANSACTION || 'transaction',
+      queue_loyalty: process.env.RABBITMQ_QUEUE_LOYALTY || 'loyalty',
       exchange: process.env.RABBITMQ_EXCHANGE,
       routingKey: process.env.RABBITMQ_ROUTINGKEY,
       queueDurable: process.env.RABBITMQ_QUEUE_DURABLE === 'true',

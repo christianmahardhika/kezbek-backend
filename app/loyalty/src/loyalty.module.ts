@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configuration } from 'src/config/config';
+import { Loyalty, LoyaltyRules } from './entities/loyalty.entity';
 import { LoyaltyController } from './loyalty.controller';
 import { LoyaltyService } from './loyalty.service';
 import {
@@ -18,7 +19,8 @@ import {
       username: configuration.GetPostgresConfig().username,
       password: configuration.GetPostgresConfig().password,
       database: configuration.GetPostgresConfig().database,
-      synchronize: configuration.GetPostgresConfig().synchronize,
+      entities: [Loyalty, LoyaltyRules],
+      synchronize: true,
       autoLoadEntities: true,
     }),
     ClientsModule.registerAsync([

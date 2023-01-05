@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { CreatePromoDto } from '../dto/create-promo.dto';
 import { UpdatePromoDto } from '../dto/update-promo.dto';
@@ -6,7 +7,7 @@ import { Promo } from '../entities/promo.entity';
 
 @Injectable()
 export class PromoRepository extends Repository<Promo> {
-  constructor(private readonly dataSource: DataSource) {
+  constructor(@InjectDataSource() private readonly dataSource: DataSource) {
     super(Promo, dataSource.createEntityManager());
   }
 
@@ -17,10 +18,11 @@ export class PromoRepository extends Repository<Promo> {
   async findPromoByQuantityAndAmount(
     trans_quantity: number,
     trans_amount: number,
-  ): Promise<number> {
-    return this.query(
-      `SELECT cashback_percentage FROM promo WHERE min_quantity <= ${trans_quantity} AND (min_transaction_amount <= ${trans_amount} and max_transaction_amount <= ${trans_amount}) AND is_active = true AND (start_date <= NOW() AND end_date <= NOW()) AND deleted_at IS NULL`,
+  ): Promise<any> {
+    const data = await this.dataSource.query(
+      `SELECT cashback_percentage FROM promo WHERE min_quantity <= ${trans_quantity} AND (min_transaction_amount <= ${trans_amount} and max_transaction_amount >= ${trans_amount}) AND is_active = true AND (promo_start_date <= NOW() AND promo_end_date >= NOW()) AND deleted_at IS NULL`,
     );
+    return data;
   }
 
   async updatePromo(updatePromoDto: UpdatePromoDto): Promise<Promo> {

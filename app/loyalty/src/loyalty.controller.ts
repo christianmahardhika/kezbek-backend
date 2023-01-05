@@ -56,9 +56,12 @@ export class LoyaltyController {
   @MessagePattern('check-tier-reward')
   async checkTierReward(@Payload() data: any) {
     try {
+      this.logger.log(data);
       const result = await this.loyaltyService.getByCustomerEmail(data);
       this.logger.log(
-        `Message [check-tier-reward] successfully send ${result}`,
+        `Message [check-tier-reward] successfully send ${JSON.stringify(
+          result,
+        )}`,
       );
       return result;
     } catch (error) {
@@ -88,11 +91,15 @@ export class LoyaltyController {
     try {
       const result = await this.loyaltyService.update(data);
       this.logger.log(
-        `Message [update-tier-reward] successfully send ${result}`,
+        `Message [update-tier-reward] successfully send ${JSON.stringify(
+          result,
+        )}`,
       );
       return result;
     } catch (error) {
-      this.logger.error(`Message [update-tier-reward] failed send ${error}`);
+      this.logger.error(
+        `Message [update-tier-reward] failed send ${JSON.stringify(error)}`,
+      );
       throw new InternalServerErrorException(error);
     }
   }

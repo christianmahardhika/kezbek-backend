@@ -5,7 +5,7 @@ export class CreateTransactionDto {
   @ApiProperty({ example: 'john.doe@test.com', description: 'customer email' })
   customer_email: string;
   @ApiProperty({
-    example: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1231c',
+    example: '90133023-1b6d-4c4d-9379-64263283dcbb',
     description: 'Partner ID',
   })
   partner_id: string;
@@ -32,7 +32,7 @@ export class SubmitTransactionDto extends PartialType(CreateTransactionDto) {
   @ApiProperty({ example: 'john.doe@test.com', description: 'customer email' })
   customer_email: string;
   @ApiProperty({
-    example: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1231c',
+    example: '7096dabb-8cc2-4e3b-bf63-127ea2678d48',
     description: 'Partner ID',
   })
   partner_id: string;
