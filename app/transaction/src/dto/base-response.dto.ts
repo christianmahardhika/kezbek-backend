@@ -1,8 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  Transaction,
-  TransactionHistory,
-} from '../entities/transaction.entity';
+import { Transaction } from '../entities/transaction.entity';
 
 export class BaseResponse {
   constructor(status: number, message: string, data: any) {
@@ -96,5 +93,5 @@ export class SuccessGetAllResponse extends BaseResponse {
     example: 'This is a sample response',
     description: 'The data of the response',
   })
-  data: TransactionHistory[];
+  data: Transaction[];
 }

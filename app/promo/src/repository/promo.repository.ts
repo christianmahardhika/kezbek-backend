@@ -14,8 +14,13 @@ export class PromoRepository extends Repository<Promo> {
     return await this.save(createPromoDto);
   }
 
-  async findPromoByCode(promo_code: string): Promise<Promo> {
-    return this.findOne({ where: { promo_code } });
+  async findPromoByQuantityAndAmount(
+    trans_quantity: number,
+    trans_amount: number,
+  ): Promise<number> {
+    return this.query(
+      `SELECT cashback_percentage FROM promo WHERE min_quantity <= ${trans_quantity} AND (min_transaction_amount <= ${trans_amount} and max_transaction_amount <= ${trans_amount}) AND is_active = true AND (start_date <= NOW() AND end_date <= NOW()) AND deleted_at IS NULL`,
+    );
   }
 
   async updatePromo(updatePromoDto: UpdatePromoDto): Promise<Promo> {

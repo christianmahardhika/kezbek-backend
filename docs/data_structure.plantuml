@@ -29,12 +29,12 @@ class "Customer" as C {
 
 class "Loyalty" as L {
     + id: string
-    + customer_id: string
+    + customer_email: string
     + current_tier_name: string
     + current_tier: int
     + next_tier: int
     + previous_tier: int
-    + loyalty_point: int
+    + is_point_send: boolean
     --
     + created_at: datetime
     + updated_at: datetime
@@ -43,10 +43,9 @@ class "Loyalty" as L {
 
 class "Loyalty Rules"  as LR {
     + id: string
-    + loyalty_id: string
     + loyalty_tier: int
-    + max_loyalty_point: int
-    + min_loyalty_point: int
+    + min_transaction_applied: int
+    + loyalty_point: int
     --
     + created_at: datetime
     + updated_at: datetime
@@ -68,25 +67,13 @@ class "Loyalty History" as LH {
 
 class "Promo Redemption" as PRD {
     + id: string
-    + promo_id: string
     + partner_id: string
-    + promo_code: string
     + is_active: boolean
-    + promo_description: text
-    + promo_image: string
-    + promo_terms: text
+    + min_quantity: int
+    + min_transaction_amount: double
+    + max_transaction_amount: double
     + promo_start_date: datetime
     + promo_end_date: datetime
-    --
-    + created_at: datetime
-    + updated_at: datetime
-    + deleted_at: datetime
-}
-
-class "Promo Rules" as PR {
-    + id: string
-    + promo_id: string
-    + jsonRules{} // tbd json rules
     --
     + created_at: datetime
     + updated_at: datetime
@@ -152,7 +139,6 @@ L -- C
 L -- LR
 L -- LH
 PRD }-- P
-PRD -- PR
 PRD -- PRDH
 T -- TH
 T }-- C

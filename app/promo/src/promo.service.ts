@@ -31,9 +31,15 @@ export class PromoService {
     }
   }
 
-  async getPromoCode(promo_code: string): Promise<Promo> {
+  async getCashBackPercentage(
+    trans_quantity: number,
+    trans_amount: number,
+  ): Promise<number> {
     try {
-      return await this.repository.findPromoByCode(promo_code);
+      return await this.repository.findPromoByQuantityAndAmount(
+        trans_quantity,
+        trans_amount,
+      );
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

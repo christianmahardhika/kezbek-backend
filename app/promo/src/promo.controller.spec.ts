@@ -30,12 +30,11 @@ describe('PromoController', () => {
     mockPromoEntity = {
       id: '76ce22c3-101b-4d8b-aba2-34df3d15e388',
       partner_id: 'qwer3-123123-123123-12312',
-      promo_code: 'PROMO123',
       is_active: true,
-      promo_description: 'This is a promo description',
-      promo_image:
-        'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-      promo_terms: 'This is a promo terms',
+      min_quantity: 1,
+      min_transaction_amount: 10,
+      max_transaction_amount: 100,
+      cashback_percentage: 10,
       promo_start_date: new Date(),
       promo_end_date: new Date(),
       created_at: new Date(),
@@ -46,12 +45,11 @@ describe('PromoController', () => {
       {
         id: '76ce22c3-101b-4d8b-aba2-34df3d15e388',
         partner_id: 'qwer3-123123-123123-12312',
-        promo_code: 'PROMO123',
         is_active: true,
-        promo_description: 'This is a promo description',
-        promo_image:
-          'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-        promo_terms: 'This is a promo terms',
+        min_quantity: 1,
+        min_transaction_amount: 10,
+        max_transaction_amount: 100,
+        cashback_percentage: 10,
         promo_start_date: new Date(),
         promo_end_date: new Date(),
         created_at: new Date(),
@@ -61,12 +59,11 @@ describe('PromoController', () => {
       {
         id: '76ce22c3-101b-4d8b-aba2-34df3d15e388',
         partner_id: 'qwer3-123123-123123-12312',
-        promo_code: 'PROMO123',
         is_active: true,
-        promo_description: 'This is a promo description',
-        promo_image:
-          'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-        promo_terms: 'This is a promo terms',
+        min_quantity: 1,
+        min_transaction_amount: 10,
+        max_transaction_amount: 100,
+        cashback_percentage: 10,
         promo_start_date: new Date(),
         promo_end_date: new Date(),
         created_at: new Date(),
@@ -137,24 +134,6 @@ describe('PromoController', () => {
       expect(result).toEqual(mockUpdatedResponse);
       expect(updatePromoOnSpy).toHaveBeenCalledTimes(1);
       expect(updatePromoOnSpy).toHaveBeenCalledWith(updateDto);
-    });
-  });
-
-  describe('Get Promo Code API', () => {
-    it('should return a promo entity', async () => {
-      const getPromoCodeOnSpy = jest
-        .spyOn(mockPromoService, 'getPromoCode')
-        .mockResolvedValue(mockPromoEntity as Promo);
-      const mockGetPromoCodeResponse = new SuccessCreateResponse(
-        200,
-        'Promo code retrieved successfully',
-        mockPromoEntity,
-      );
-      const result = await controller.getByPromoCode('PROMO123');
-
-      expect(result).toEqual(mockGetPromoCodeResponse);
-      expect(getPromoCodeOnSpy).toHaveBeenCalledTimes(1);
-      expect(getPromoCodeOnSpy).toHaveBeenCalledWith('PROMO123');
     });
   });
 

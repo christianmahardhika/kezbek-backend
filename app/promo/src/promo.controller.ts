@@ -1,12 +1,13 @@
 import {
   Body,
   Controller,
-  DefaultValuePipe,
   Get,
+  InternalServerErrorException,
+  Logger,
   Patch,
   Post,
-  Query,
 } from '@nestjs/common';
+import { MessagePattern, Payload } from '@nestjs/microservices';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -16,7 +17,6 @@ import {
   ApiInternalServerErrorResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiQuery,
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
@@ -30,8 +30,8 @@ import {
   SuccessCreateResponse,
   SuccessGetAllResponse,
   SuccessUpdateResponse,
-  SucessGetOneResponse,
 } from './dto/base-response.dto';
+import { CashBackDto } from './dto/cashback.dto';
 import { CreatePromoDto } from './dto/create-promo.dto';
 import { UpdatePromoDto } from './dto/update-promo.dto';
 import { PromoService } from './promo.service';
@@ -41,6 +41,8 @@ import { PromoService } from './promo.service';
 @Controller()
 export class PromoController {
   constructor(private readonly promoService: PromoService) {}
+
+  private readonly logger = new Logger('Promo Service');
 
   @Post()
   @ApiOperation({ summary: 'Create a new promo' })
@@ -124,34 +126,21 @@ export class PromoController {
     );
   }
 
-  @Get('promo_code')
-  @ApiOperation({ summary: 'Get promo code' })
-  @ApiOkResponse({ type: SucessGetOneResponse })
-  @ApiForbiddenResponse({
-    description: 'Forbidden.',
-    type: ErrorResponseForbidden,
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    type: ErrorResponseUnauthorized,
-  })
-  @ApiBadRequestResponse({
-    description: 'Bad Request',
-    type: ErrorResponseBadRequest,
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal Server Error',
-    type: ErrorResponseInternalServerError,
-  })
-  @ApiQuery({ name: 'promo_code', type: String })
-  async getByPromoCode(
-    @Query('promo_code', new DefaultValuePipe({})) promo_code: string,
-  ) {
-    const result = await this.promoService.getPromoCode(promo_code);
-    return new SucessGetOneResponse(
-      200,
-      'Promo code retrieved successfully',
-      result,
-    );
+  // message queue
+  @MessagePattern('check-cashback-promo')
+  async checkCashbackPromo(@Payload() data: CashBackDto) {
+    try {
+      const result = await this.promoService.getCashBackPercentage(
+        data.trans_quantity,
+        data.trans_amount,
+      );
+      this.logger.log(
+        `Message [check-cashback-promo] successfully send ${result}`,
+      );
+      return result;
+    } catch (error) {
+      this.logger.error(`Message [check-cashback-promo] failed send ${error}`);
+      throw new InternalServerErrorException(error);
+    }
   }
 }
