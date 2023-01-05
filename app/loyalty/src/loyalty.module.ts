@@ -4,7 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { configuration } from 'src/config/config';
 import { LoyaltyController } from './loyalty.controller';
 import { LoyaltyService } from './loyalty.service';
-import { LoyaltyRepository } from './repository/loyalty.repository';
+import {
+  LoyaltyRepository,
+  LoyaltyRulesRepository,
+} from './repository/loyalty.repository';
 
 @Module({
   imports: [
@@ -68,6 +71,6 @@ import { LoyaltyRepository } from './repository/loyalty.repository';
     ]),
   ],
   controllers: [LoyaltyController],
-  providers: [LoyaltyService, LoyaltyRepository],
+  providers: [LoyaltyService, LoyaltyRepository, LoyaltyRulesRepository],
 })
 export class LoyaltyModule {}

@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
-import { CreateLoyaltyDto } from '../dto/create-loyalty.dto';
+import {
+  CreateLoyaltyDto,
+  CreateLoyaltyRulesDto,
+} from '../dto/create-loyalty.dto';
 import { UpdateLoyaltyDto } from '../dto/update-loyalty.dto';
-import { Loyalty } from '../entities/loyalty.entity';
+import { Loyalty, LoyaltyRules } from '../entities/loyalty.entity';
 
 @Injectable()
 export class LoyaltyRepository extends Repository<Loyalty> {
@@ -14,11 +17,27 @@ export class LoyaltyRepository extends Repository<Loyalty> {
     return await this.save(createLoyaltyDto);
   }
 
-  async findLoyaltyByCustomerID(customer_id: string): Promise<Loyalty> {
-    return this.findOne({ where: { customer_id } });
-  }
-
   async updateLoyalty(updateLoyaltyDto: UpdateLoyaltyDto): Promise<Loyalty> {
     return await this.save(updateLoyaltyDto);
+  }
+
+  async findLoyaltyByCustomerEmail(customer_email: string): Promise<Loyalty> {
+    return this.findOne({ where: { customer_email } });
+  }
+}
+
+@Injectable()
+export class LoyaltyRulesRepository extends Repository<LoyaltyRules> {
+  constructor(private readonly dataSource: DataSource) {
+    super(LoyaltyRules, dataSource.createEntityManager());
+  }
+
+  createLoyaltyRules(
+    createLoyaltyRulesDto: CreateLoyaltyRulesDto,
+  ): Promise<LoyaltyRules> {
+    return this.save(createLoyaltyRulesDto);
+  }
+  findAll(): Promise<LoyaltyRules[]> {
+    return this.find();
   }
 }

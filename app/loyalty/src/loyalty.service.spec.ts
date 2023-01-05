@@ -4,7 +4,10 @@ import { CreateLoyaltyDto } from './dto/create-loyalty.dto';
 import { UpdateLoyaltyDto } from './dto/update-loyalty.dto';
 import { Loyalty } from './entities/loyalty.entity';
 import { LoyaltyService } from './loyalty.service';
-import { LoyaltyRepository } from './repository/loyalty.repository';
+import {
+  LoyaltyRepository,
+  LoyaltyRulesRepository,
+} from './repository/loyalty.repository';
 
 describe('LoyaltyService', () => {
   let service: LoyaltyService;
@@ -14,6 +17,13 @@ describe('LoyaltyService', () => {
     createLoyalty: jest.fn(() => Promise.resolve(mockLoyaltyEntity)),
     updateLoyalty: jest.fn(() => Promise.resolve(mockLoyaltyEntity)),
     findLoyaltyByCustomerID: jest.fn(() => Promise.resolve(mockLoyaltyEntity)),
+    findLoyaltyByCustomerEmail: jest.fn(() =>
+      Promise.resolve(mockLoyaltyEntity),
+    ),
+  };
+
+  const mockLoyaltyRulesRepository = {
+    findAll: jest.fn(() => Promise.resolve(mockLoyaltyEntity)),
   };
 
   beforeEach(async () => {
@@ -21,6 +31,10 @@ describe('LoyaltyService', () => {
       providers: [
         LoyaltyService,
         { provide: LoyaltyRepository, useValue: mockLoyaltyRepository },
+        {
+          provide: LoyaltyRulesRepository,
+          useValue: mockLoyaltyRulesRepository,
+        },
       ],
     }).compile();
 
@@ -28,12 +42,13 @@ describe('LoyaltyService', () => {
 
     mockLoyaltyEntity = {
       id: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
-      customer_id: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
+      customer_email: 'john.doe@test.com',
       current_tier_name: 'Gold',
       current_tier: 2,
       next_tier: 3,
       previous_tier: 1,
-      loyalty_point: 100,
+      is_point_send: false,
+      reccuring_transaction: 1,
       created_at: new Date(),
       updated_at: new Date(),
       deleted_at: null,
@@ -101,22 +116,24 @@ describe('LoyaltyService', () => {
     });
   });
 
-  describe('Find Loyalty By Customer ID', () => {
+  describe('Find Loyalty By Customer Email', () => {
     it('should return a loyalty', async () => {
       // setup the mock
-      const customer_id = mockLoyaltyEntity.customer_id;
+      const customer_email = mockLoyaltyEntity.customer_email;
 
-      const findLoyaltyByCustomerIDOnSpy = jest
-        .spyOn(mockLoyaltyRepository, 'findLoyaltyByCustomerID')
+      const findLoyaltyByCustomerEmailOnSpy = jest
+        .spyOn(mockLoyaltyRepository, 'findLoyaltyByCustomerEmail')
         .mockResolvedValue(mockLoyaltyEntity as Loyalty);
 
       // call method
-      const result = await service.getByCustomerID(customer_id);
+      const result = await service.getByCustomerEmail(customer_email);
 
       // assert result
       expect(result).toEqual(mockLoyaltyEntity);
-      expect(findLoyaltyByCustomerIDOnSpy).toHaveBeenCalledTimes(1);
-      expect(findLoyaltyByCustomerIDOnSpy).toHaveBeenCalledWith(customer_id);
+      expect(findLoyaltyByCustomerEmailOnSpy).toHaveBeenCalledTimes(1);
+      expect(findLoyaltyByCustomerEmailOnSpy).toHaveBeenCalledWith(
+        customer_email,
+      );
     });
   });
 });

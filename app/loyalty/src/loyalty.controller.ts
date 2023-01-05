@@ -1,26 +1,19 @@
-import { Body, Controller, Get, Patch, Post, Query } from '@nestjs/common';
 import {
-  ApiBadRequestResponse,
+  Body,
+  Controller,
+  InternalServerErrorException,
+  Logger,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import {
   ApiBearerAuth,
   ApiCreatedResponse,
-  ApiForbiddenResponse,
-  ApiInternalServerErrorResponse,
-  ApiOkResponse,
   ApiOperation,
-  ApiQuery,
   ApiTags,
-  ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import {
-  ErrorResponseBadRequest,
-  ErrorResponseForbidden,
-  ErrorResponseInternalServerError,
-  ErrorResponseUnauthorized,
-} from './dto/base-error-response.dto';
-import {
-  SuccessCreateResponse,
-  SucessGetOneResponse,
-} from './dto/base-response.dto';
+import { SuccessCreateResponse } from './dto/base-response.dto';
 import { CreateLoyaltyDto } from './dto/create-loyalty.dto';
 import { UpdateLoyaltyDto } from './dto/update-loyalty.dto';
 import { LoyaltyService } from './loyalty.service';
@@ -30,7 +23,7 @@ import { LoyaltyService } from './loyalty.service';
 @Controller()
 export class LoyaltyController {
   constructor(private readonly loyaltyService: LoyaltyService) {}
-
+  private readonly logger = new Logger('Loyalty Service');
   @Post()
   @ApiOperation({ summary: 'Create a new loyalty' })
   @ApiCreatedResponse({ type: SuccessCreateResponse })
@@ -59,28 +52,48 @@ export class LoyaltyController {
     );
   }
 
-  @Get('customer')
-  @ApiOperation({ summary: 'Get loyalty by customer ID' })
-  @ApiOkResponse({ description: 'Loyalty found', type: SucessGetOneResponse })
-  @ApiForbiddenResponse({
-    description: 'Forbidden.',
-    type: ErrorResponseForbidden,
-  })
-  @ApiUnauthorizedResponse({
-    description: 'Unauthorized',
-    type: ErrorResponseUnauthorized,
-  })
-  @ApiBadRequestResponse({
-    description: 'Bad Request',
-    type: ErrorResponseBadRequest,
-  })
-  @ApiInternalServerErrorResponse({
-    description: 'Internal Server Error',
-    type: ErrorResponseInternalServerError,
-  })
-  @ApiQuery({ name: 'ID', type: String, required: true })
-  async getByCustomerID(@Query('ID') id: string) {
-    const result = await this.loyaltyService.getByCustomerID(id);
-    return new SucessGetOneResponse(200, 'Loyalty found', result);
+  // Message Queue
+  @MessagePattern('check-tier-reward')
+  async checkTierReward(@Payload() data: any) {
+    try {
+      const result = await this.loyaltyService.getByCustomerEmail(data);
+      this.logger.log(
+        `Message [check-tier-reward] successfully send ${result}`,
+      );
+      return result;
+    } catch (error) {
+      this.logger.error(`Message [check-tier-reward] failed send ${error}`);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  @MessagePattern('get-loyalty-point-by-transaction-applied')
+  async getAllLoyaltyRules(@Payload() data: any) {
+    try {
+      const result = await this.loyaltyService.getAllLoyaltyRules();
+      this.logger.log(
+        `Message [get-loyalty-point-by-transaction-applied] successfully send ${result}`,
+      );
+      return result;
+    } catch (error) {
+      this.logger.error(
+        `Message [get-loyalty-point-by-transaction-applied] failed send ${error}`,
+      );
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  @EventPattern('update-tier-reward')
+  async updateTierReward(@Payload() data: any) {
+    try {
+      const result = await this.loyaltyService.update(data);
+      this.logger.log(
+        `Message [update-tier-reward] successfully send ${result}`,
+      );
+      return result;
+    } catch (error) {
+      this.logger.error(`Message [update-tier-reward] failed send ${error}`);
+      throw new InternalServerErrorException(error);
+    }
   }
 }
