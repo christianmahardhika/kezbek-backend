@@ -29,7 +29,7 @@ import { PromoRepository } from './repository/promo.repository';
           transport: Transport.RMQ,
           options: {
             urls: [
-              'amqp://' +
+              configuration.GetRabbitMQConfig().protocol +
                 configuration.GetRabbitMQConfig().username +
                 ':' +
                 configuration.GetRabbitMQConfig().password +
@@ -52,7 +52,7 @@ import { PromoRepository } from './repository/promo.repository';
           transport: Transport.RMQ,
           options: {
             urls: [
-              'amqp://' +
+              configuration.GetRabbitMQConfig().protocol +
                 configuration.GetRabbitMQConfig().username +
                 ':' +
                 configuration.GetRabbitMQConfig().password +

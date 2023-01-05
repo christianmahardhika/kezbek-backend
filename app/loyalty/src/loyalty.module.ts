@@ -30,7 +30,7 @@ import {
           transport: Transport.RMQ,
           options: {
             urls: [
-              'amqp://' +
+              configuration.GetRabbitMQConfig().protocol +
                 configuration.GetRabbitMQConfig().username +
                 ':' +
                 configuration.GetRabbitMQConfig().password +
@@ -53,7 +53,7 @@ import {
           transport: Transport.RMQ,
           options: {
             urls: [
-              'amqp://' +
+              'amqps://' +
                 configuration.GetRabbitMQConfig().username +
                 ':' +
                 configuration.GetRabbitMQConfig().password +

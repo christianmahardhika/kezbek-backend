@@ -24,6 +24,7 @@ type RedisConfig = {
 type RabbitMQConfig = {
   host: string;
   port: number;
+  protocol: string;
   username: string;
   password: string;
   queue: string;
@@ -78,6 +79,7 @@ class Config {
     return {
       host: process.env.RABBITMQ_HOST || 'localhost',
       port: parseInt(process.env.RABBITMQ_PORT) || 5672,
+      protocol: process.env.RABBITMQ_PROTOCOL || 'amqp://',
       username: process.env.RABBITMQ_USERNAME || 'rabbitmq',
       password: process.env.RABBITMQ_PASSWORD || 'rabbitmq',
       queue: process.env.RABBITMQ_QUEUE || 'test',

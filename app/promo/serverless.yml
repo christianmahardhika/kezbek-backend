@@ -12,8 +12,8 @@ provider:
   stage: prod
   timeout: 20
   apiGateway:
-    restApiId: ${param:AWS_REST_API_ID}
-    restApiRootResourceId: ${param:AWS_REST_API_ROOT_RESOURCE_ID}
+    restApiId: brvoz49rbj
+    restApiRootResourceId: 4f70qpyk4l
 
 functions:
   api:

@@ -27,7 +27,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: [
-        'amqp://' +
+        configuration.GetRabbitMQConfig().protocol +
           configuration.GetRabbitMQConfig().username +
           ':' +
           configuration.GetRabbitMQConfig().password +
