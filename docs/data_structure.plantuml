@@ -35,6 +35,7 @@ class "Loyalty" as L {
     + next_tier: int
     + previous_tier: int
     + is_point_send: boolean
+    + reccuring_transaction: int
     --
     + created_at: datetime
     + updated_at: datetime
