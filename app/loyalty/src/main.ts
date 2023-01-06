@@ -19,7 +19,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-document', app, document);
 
-  const PORT = process.env.PORT || 3000;
+  const PORT = process.env.PORT || 3001;
   await app.listen(PORT);
   logger.log(`Loyalty Service is running on port ${PORT}`);
 
@@ -27,7 +27,7 @@ async function bootstrap() {
     transport: Transport.RMQ,
     options: {
       urls: [
-        'amqp://' +
+        configuration.GetRabbitMQConfig().protocol +
           configuration.GetRabbitMQConfig().username +
           ':' +
           configuration.GetRabbitMQConfig().password +
@@ -36,6 +36,11 @@ async function bootstrap() {
           ':' +
           configuration.GetRabbitMQConfig().port,
       ],
+      queue: configuration.GetRabbitMQConfig().queue_loyalty,
+      queueOptions: {
+        durable: false,
+      },
+      prefetchcount: 1,
     },
   });
   await app.startAllMicroservices();

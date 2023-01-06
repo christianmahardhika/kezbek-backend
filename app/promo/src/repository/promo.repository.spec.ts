@@ -23,15 +23,14 @@ describe('PromoRepository', () => {
     repository = module.get<PromoRepository>(PromoRepository);
     mockPromoEntity = {
       id: '76ce22c3-101b-4d8b-aba2-34df3d15e388',
-      partner_id: 'qwer3-123123-123123-123123',
-      promo_code: 'PROMO123',
+      partner_id: 'qwer3-123123-123123-12312',
       is_active: true,
-      promo_description: 'This is a promo description',
-      promo_image:
-        'https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png',
-      promo_terms: 'This is a promo terms',
+      min_quantity: 1,
+      min_transaction_amount: 10,
+      max_transaction_amount: 100,
+      cashback_percentage: 10,
       promo_start_date: new Date(),
-      promo_end_date: new Date(+5),
+      promo_end_date: new Date(),
       created_at: new Date(),
       updated_at: new Date(),
       deleted_at: null,
@@ -113,18 +112,19 @@ describe('PromoRepository', () => {
     });
   });
 
-  describe('Find Promo By Code', () => {
-    it('should return promo', async () => {
+  describe('Find Promo by quantity and amount', () => {
+    it('should return number', async () => {
       // setup
+
       const mockRepoMethods = jest
-        .spyOn(repository, 'findOne')
-        .mockResolvedValue(mockPromoEntity);
+        .spyOn(repository, 'query')
+        .mockResolvedValue(10);
 
       // test the function
-      const result = await repository.findPromoByCode('PROMO123');
+      const result = await repository.findPromoByQuantityAndAmount(1, 100);
 
       // assert
-      expect(result).toEqual(mockPromoEntity);
+      expect(result).toEqual(10);
       expect(mockRepoMethods).toBeCalled();
     });
   });

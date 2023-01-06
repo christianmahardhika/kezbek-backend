@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { CreatePromoDto } from './dto/create-promo.dto';
 import { UpdatePromoDto } from './dto/update-promo.dto';
 import { Promo } from './entities/promo.entity';
@@ -14,6 +18,8 @@ export class PromoService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  private logger = new Logger('Promo Service');
 
   async findAll(): Promise<Promo[]> {
     try {
@@ -31,10 +37,22 @@ export class PromoService {
     }
   }
 
-  async getPromoCode(promo_code: string): Promise<Promo> {
+  async getCashBackPercentage(
+    trans_quantity: number,
+    trans_amount: number,
+  ): Promise<number> {
     try {
-      return await this.repository.findPromoByCode(promo_code);
+      const data = await this.repository.findPromoByQuantityAndAmount(
+        trans_quantity,
+        trans_amount,
+      );
+      console.log(data);
+      if (data.length === 0) {
+        return 0;
+      }
+      return data;
     } catch (error) {
+      this.logger.error(error);
       throw new InternalServerErrorException(error);
     }
   }

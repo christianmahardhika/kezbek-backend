@@ -1,74 +1,232 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
+import { CashBackDto } from './dto/cashback.dto';
 import {
   CreateTransactionDto,
   SubmitTransactionDto,
   SubmitTransactionReturnDto,
 } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { Transaction, TransactionHistory } from './entities/transaction.entity';
-import {
-  TransactionHistoryRepository,
-  TransactionRepository,
-} from './repository/transaction.repository';
+import { LoyaltyDto } from './dto/loyalty.dto';
+import { Transaction } from './entities/transaction.entity';
+import { TransactionRepository } from './repository/transaction.repository';
 
 @Injectable()
 export class TransactionService {
   constructor(
-    private readonly repositoryTransaction: TransactionRepository,
-    private readonly repositoryTransactionHistory: TransactionHistoryRepository,
-  ) {}
+    private readonly repository: TransactionRepository,
+    @Inject('PROMO_SERVICE') private readonly promoClient: ClientProxy,
+    @Inject('LOYALTY_SERVICE') private readonly loyaltyClient: ClientProxy,
+  ) {
+    this.promoClient.connect();
+    this.loyaltyClient.connect();
+  }
+
+  private readonly logger = new Logger('Transaction Service');
+
   create(createTransactionDto: CreateTransactionDto): Promise<Transaction> {
-    return this.repositoryTransaction.createTransaction(createTransactionDto);
+    return this.repository.createTransaction(createTransactionDto);
   }
 
   submitTransaction(
     submitTransactionDto: SubmitTransactionDto,
   ): Promise<SubmitTransactionReturnDto> {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       try {
-        // TODO: Implement check if customer is eligible for cashback (hit promo service)
+        // TODO: Implement check if customer is eligible for cashback (message to promo service) and tier reward (message to loyalty service)
+        var loyaltyDto: LoyaltyDto;
+        var cashback: number;
+        var transactionDto: CreateTransactionDto;
+        await Promise.all([
+          this.checkTierByCustomerEmail(submitTransactionDto.customer_email),
+          this.getCashback(
+            submitTransactionDto.transaction_amount,
+            submitTransactionDto.transaction_quantity,
+          ),
+          this.repository.findLastTransactionByCustomerEmail(
+            submitTransactionDto.customer_email,
+          ),
+        ])
+          .then((values) => {
+            loyaltyDto = values[0];
+            cashback = values[1];
+            transactionDto = values[2];
+            if (!loyaltyDto) {
+              const data = new SubmitTransactionReturnDto(
+                false,
+                'customer is not eligible for tier reward',
+                null,
+              );
+              reject(data);
+            }
+          })
+          .catch((err) => {
+            this.logger.error(err);
+            const data = new SubmitTransactionReturnDto(
+              false,
+              'customer is not eligible for cashback',
+              null,
+            );
+            reject(data);
+          });
 
-        
+        // Implement calculate total cashback amount, tier reward, and reward (add to queue)
+        // - get cashback amount from promo service
+        let reward: number;
+        await this.checkReward(loyaltyDto).then((value) => {
+          reward = value;
+        });
 
-        // TODO: Implement check if customer is eligible for tier reward (hit loyalty service)
-
-        // TODO: Implement calculate cashback amount, tier reward, and reward (add to queue)
+        // upgrade tier if eligible
+        loyaltyDto = await this.upgradeTierReward(loyaltyDto);
+        // downgrade tier there is no transaction in 1 month
+        loyaltyDto = await this.downgradeTierReward(loyaltyDto, transactionDto);
+        // async
 
         // TODO: Implement send email notification to customer (add to queue)
 
-        const data = new SubmitTransactionReturnDto(
-          true,
-          'Transaction submitted successfully',
-          '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
-        );
-        resolve(data);
+        // TODO: Implement send cashback to customer (add to queue)
+
+        // Implement update loyalty tier (send event to loyalty service)
+        if (loyaltyDto.reccuring_transaction != 0) {
+          loyaltyDto.reccuring_transaction =
+            loyaltyDto.reccuring_transaction + 1;
+        }
+
+        this.loyaltyClient.emit('update-tier-reward', loyaltyDto);
+
+        // Implement save transaction to database
+
+        transactionDto = {
+          customer_email: submitTransactionDto.customer_email,
+          transaction_amount: submitTransactionDto.transaction_amount,
+          transaction_quantity: submitTransactionDto.transaction_quantity,
+          cashback_amount: cashback,
+          tier_reward_amount: reward,
+          total_reward_amount:
+            submitTransactionDto.transaction_amount * (cashback / 100) + reward,
+          tier: loyaltyDto.current_tier,
+          is_cashback_applied: true,
+          partner_id: submitTransactionDto.partner_id,
+          created_at: new Date(),
+          updated_at: null,
+          deleted_at: null,
+        };
+
+        this.repository
+          .createTransaction(transactionDto)
+          .then((value) => {
+            const data = new SubmitTransactionReturnDto(
+              true,
+              'Transaction submitted successfully',
+              value.id,
+            );
+            resolve(data);
+          })
+          .catch((err) => {
+            this.logger.error(err);
+            reject(err);
+          });
       } catch (error) {
+        this.logger.error(error);
         reject(error);
       }
     });
   }
 
-  findByDateAndPartnerID(
-    start_date: Date,
-    end_date: Date,
-    partner_id: string,
-  ): Promise<TransactionHistory[]> {
-    return this.repositoryTransactionHistory.findTransactionHistoryByPartnerID(
-      start_date,
-      end_date,
-      partner_id,
+  private upgradeTierReward(loyaltyDto: LoyaltyDto): LoyaltyDto {
+    if (loyaltyDto.reccuring_transaction > 7 && loyaltyDto.next_tier > 3) {
+      loyaltyDto.current_tier = loyaltyDto.next_tier;
+      loyaltyDto.next_tier = loyaltyDto.next_tier + 1;
+      loyaltyDto.reccuring_transaction = 1;
+      loyaltyDto.updated_at = new Date();
+      return loyaltyDto;
+    }
+    return loyaltyDto;
+  }
+
+  private downgradeTierReward(
+    loyaltyDto: LoyaltyDto,
+    transactionDto: CreateTransactionDto,
+  ): LoyaltyDto {
+    const diff = Math.abs(
+      new Date().getTime() - transactionDto.created_at.getTime(),
     );
+    var diffDays = Math.ceil(diff / (1000 * 3600 * 24));
+    if (diffDays > 30) {
+      loyaltyDto.current_tier = loyaltyDto.next_tier;
+      loyaltyDto.next_tier = loyaltyDto.next_tier - 1;
+      loyaltyDto.reccuring_transaction = 1;
+      loyaltyDto.updated_at = new Date();
+      return loyaltyDto;
+    }
+    return loyaltyDto;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  private async checkReward(loyaltyDto: LoyaltyDto) {
+    switch (loyaltyDto.reccuring_transaction) {
+      case 3:
+        return await this.getReward(
+          loyaltyDto.current_tier,
+          loyaltyDto.reccuring_transaction,
+        );
+      case 5:
+        return await this.getReward(
+          loyaltyDto.current_tier,
+          loyaltyDto.reccuring_transaction,
+        );
+      case 7:
+        return await this.getReward(
+          loyaltyDto.current_tier,
+          loyaltyDto.reccuring_transaction,
+        );
+
+      default:
+        return 0;
+    }
   }
 
-  update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
+  private async checkTierByCustomerEmail(email: string) {
+    const data = await firstValueFrom(
+      this.loyaltyClient.send('check-tier-reward', email),
+    );
+    return data;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} transaction`;
+  private async getCashback(trans_quantity: number, trans_amount) {
+    const payload: CashBackDto = {
+      trans_quantity: trans_quantity,
+      trans_amount: trans_amount,
+    };
+    const data: number = await firstValueFrom(
+      this.promoClient.send('check-cashback-promo', payload),
+    );
+    return data;
   }
+
+  private async getReward(tier: number, reccuring_transaction: number) {
+    const payload = {
+      tier: tier,
+      reccuring_transaction: reccuring_transaction,
+    };
+    const data: number = await firstValueFrom(
+      this.loyaltyClient.send(
+        'get-loyalty-point-by-transaction-applied',
+        payload,
+      ),
+    );
+    return data;
+  }
+
+  // findOne(id: number) {
+  //   return `This action returns a #${id} transaction`;
+  // }
+
+  // update(id: number, updateTransactionDto: UpdateTransactionDto) {
+  //   return `This action updates a #${id} transaction`;
+  // }
+
+  // remove(id: number) {
+  //   return `This action removes a #${id} transaction`;
+  // }
 }

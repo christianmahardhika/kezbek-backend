@@ -16,11 +16,13 @@ type PostgresConfig = {
 type RabbitMQConfig = {
   host: string;
   port: number;
+  protocol: string;
   username: string;
   password: string;
   queue: string;
   queue_promo: string;
   queue_loyalty: string;
+  queue_transaction: string;
   exchange: string;
   routingKey: string;
   queueDurable: boolean;
@@ -59,11 +61,14 @@ class Config {
     return {
       host: process.env.RABBITMQ_HOST || 'localhost',
       port: parseInt(process.env.RABBITMQ_PORT) || 5672,
+      protocol: process.env.RABBITMQ_PROTOCOL || 'amqp://',
       username: process.env.RABBITMQ_USERNAME || 'rabbitmq',
       password: process.env.RABBITMQ_PASSWORD || 'rabbitmq',
       queue: process.env.RABBITMQ_QUEUE || 'test',
       queue_promo: process.env.RABBITMQ_QUEUE_PROMO || 'promo',
       queue_loyalty: process.env.RABBITMQ_QUEUE_LOYALTY || 'loyalty',
+      queue_transaction:
+        process.env.RABBITMQ_QUEUE_TRANSACTION || 'transaction',
       exchange: process.env.RABBITMQ_EXCHANGE,
       routingKey: process.env.RABBITMQ_ROUTINGKEY,
       queueDurable: process.env.RABBITMQ_QUEUE_DURABLE === 'true',

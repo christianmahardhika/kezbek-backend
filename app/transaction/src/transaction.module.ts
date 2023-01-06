@@ -2,17 +2,14 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configuration } from 'src/config/config';
-import { HealthcheckModule } from 'src/healthcheck/healthcheck.module';
-import {
-  TransactionHistoryRepository,
-  TransactionRepository,
-} from './repository/transaction.repository';
+import { Transaction } from './entities/transaction.entity';
+import { HealthcheckModule } from './healthcheck/healthcheck.module';
+import { TransactionRepository } from './repository/transaction.repository';
 import { TransactionController } from './transaction.controller';
 import { TransactionService } from './transaction.service';
 
 @Module({
   imports: [
-    HealthcheckModule,
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: configuration.GetPostgresConfig().host,
@@ -20,7 +17,8 @@ import { TransactionService } from './transaction.service';
       username: configuration.GetPostgresConfig().username,
       password: configuration.GetPostgresConfig().password,
       database: configuration.GetPostgresConfig().database,
-      synchronize: configuration.GetPostgresConfig().synchronize,
+      entities: [Transaction],
+      synchronize: true,
       autoLoadEntities: true,
     }),
     ClientsModule.registerAsync([
@@ -30,7 +28,7 @@ import { TransactionService } from './transaction.service';
           transport: Transport.RMQ,
           options: {
             urls: [
-              'amqp://' +
+              configuration.GetRabbitMQConfig().protocol +
                 configuration.GetRabbitMQConfig().username +
                 ':' +
                 configuration.GetRabbitMQConfig().password +
@@ -53,7 +51,7 @@ import { TransactionService } from './transaction.service';
           transport: Transport.RMQ,
           options: {
             urls: [
-              'amqp://' +
+              configuration.GetRabbitMQConfig().protocol +
                 configuration.GetRabbitMQConfig().username +
                 ':' +
                 configuration.GetRabbitMQConfig().password +
@@ -71,12 +69,9 @@ import { TransactionService } from './transaction.service';
         }),
       },
     ]),
+    HealthcheckModule,
   ],
   controllers: [TransactionController],
-  providers: [
-    TransactionService,
-    TransactionRepository,
-    TransactionHistoryRepository,
-  ],
+  providers: [TransactionService, TransactionRepository],
 })
 export class TransactionModule {}

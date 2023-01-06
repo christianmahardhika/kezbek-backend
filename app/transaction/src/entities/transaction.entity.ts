@@ -1,82 +1,54 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
+@Entity()
 export class Transaction {
   @ApiProperty({
     example: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
     description: 'Transaction ID',
   })
+  @PrimaryGeneratedColumn('uuid')
   id: string;
   @ApiProperty({
-    example: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
-    description: 'Customer ID',
+    example: 'john.doe@test.com',
+    description: 'Customer Email',
   })
-  customer_id: string;
+  @Column({ type: 'varchar' })
+  customer_email: string;
   @ApiProperty({
-    example: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1231c',
+    example: '90133023-1b6d-4c4d-9379-64263283dcbb',
     description: 'Partner ID',
   })
+  @Column({ type: 'uuid' })
   partner_id: string;
   @ApiProperty({ example: true, description: 'Is Cashback Applied' })
+  @Column({ type: 'boolean', default: false })
   is_cashback_applied: boolean;
   @ApiProperty({ example: 1000, description: 'Cashback Amount' })
-  cashback_amount: Number;
+  @Column({ type: 'decimal', nullable: true })
+  cashback_amount: number;
   @ApiProperty({ example: 100000, description: 'Transaction Amount' })
-  transaction_amount: Number;
+  @Column({ type: 'decimal' })
+  transaction_amount: number;
   @ApiProperty({ example: 1, description: 'Transaction Quantity' })
-  transaction_quantity: Number;
+  @Column({ type: 'int' })
+  transaction_quantity: number;
   @ApiProperty({ example: 1000, description: 'Tier Reward Amount' })
-  tier_reward_amount: Number;
+  @Column({ type: 'decimal', nullable: true })
+  tier_reward_amount: number;
   @ApiProperty({ example: 1, description: 'Tier' })
-  tier: Number;
+  @Column({ type: 'int' })
+  tier: number;
   @ApiProperty({ example: 1000, description: 'Total Reward Amount' })
-  total_reward_amount: Number;
+  @Column({ type: 'decimal' })
+  total_reward_amount: number;
   @ApiProperty({ example: new Date(), description: 'Created At' })
+  @Column({ type: 'timestamp' })
   created_at: Date;
   @ApiProperty({ example: new Date(), description: 'Updated At' })
+  @Column({ type: 'timestamp', nullable: true })
   updated_at: Date;
   @ApiProperty({ example: new Date(), description: 'Deleted At' })
-  deleted_at: Date;
-}
-
-export class TransactionHistory {
-  @ApiProperty({
-    example: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
-    description: 'Transaction History ID',
-  })
-  id: string;
-  @ApiProperty({
-    example: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
-    description: 'Transaction ID',
-  })
-  transaction_id: string;
-  @ApiProperty({
-    example: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
-    description: 'Customer ID',
-  })
-  customer_id: string;
-  @ApiProperty({
-    example: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1231c',
-    description: 'Partner ID',
-  })
-  partner_id: string;
-  @ApiProperty({ example: true, description: 'Is Cashback Applied' })
-  is_cashback_applied: boolean;
-  @ApiProperty({ example: 1000, description: 'Cashback Amount' })
-  cashback_amount: Number;
-  @ApiProperty({ example: 100000, description: 'Transaction Amount' })
-  transaction_amount: Number;
-  @ApiProperty({ example: 1, description: 'Transaction Quantity' })
-  transaction_quantity: Number;
-  @ApiProperty({ example: 1000, description: 'Tier Reward Amount' })
-  tier_reward_amount: Number;
-  @ApiProperty({ example: 1, description: 'Tier' })
-  tier: Number;
-  @ApiProperty({ example: 1000, description: 'Total Reward Amount' })
-  total_reward_amount: Number;
-  @ApiProperty({ example: new Date(), description: 'Created At' })
-  created_at: Date;
-  @ApiProperty({ example: new Date(), description: 'Updated At' })
-  updated_at: Date;
-  @ApiProperty({ example: new Date(), description: 'Deleted At' })
+  @Column({ type: 'timestamp', nullable: true })
   deleted_at: Date;
 }

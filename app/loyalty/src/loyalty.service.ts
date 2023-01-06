@@ -1,17 +1,28 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { CreateLoyaltyDto } from './dto/create-loyalty.dto';
 import { UpdateLoyaltyDto } from './dto/update-loyalty.dto';
-import { Loyalty } from './entities/loyalty.entity';
-import { LoyaltyRepository } from './repository/loyalty.repository';
+import { Loyalty, LoyaltyRules } from './entities/loyalty.entity';
+import {
+  LoyaltyRepository,
+  LoyaltyRulesRepository,
+} from './repository/loyalty.repository';
 
 @Injectable()
 export class LoyaltyService {
-  constructor(private readonly repository: LoyaltyRepository) {}
+  constructor(
+    private readonly repository: LoyaltyRepository,
+    private readonly repositoryLoyaltyRules: LoyaltyRulesRepository,
+  ) {}
+  private readonly logger = new Logger('Loyalty Service');
   async create(createLoyaltyDto: CreateLoyaltyDto): Promise<Loyalty> {
     try {
       return await this.repository.createLoyalty(createLoyaltyDto);
     } catch (error) {
-      console.log(error);
+      this.logger.error(`Error creating loyalty: ${error}`);
       throw new InternalServerErrorException(error);
     }
   }
@@ -20,16 +31,27 @@ export class LoyaltyService {
     try {
       return await this.repository.updateLoyalty(updateLoyaltyDto);
     } catch (error) {
-      console.log(error);
+      this.logger.error(`Error updating loyalty: ${error}`);
       throw new InternalServerErrorException(error);
     }
   }
 
-  async getByCustomerID(id: string): Promise<Loyalty> {
+  async getByCustomerEmail(email: string): Promise<Loyalty> {
     try {
-      return await this.repository.findLoyaltyByCustomerID(id);
+      return await this.repository.findLoyaltyByCustomerEmail(email);
     } catch (error) {
-      console.log(error);
+      this.logger.error(`Error getting loyalty by customer email: ${error}`);
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async getAllLoyaltyRules(): Promise<LoyaltyRules[]> {
+    try {
+      return await this.repositoryLoyaltyRules.findAll();
+    } catch (error) {
+      this.logger.error(
+        `Error getting loyalty point by transaction applied: ${error}`,
+      );
       throw new InternalServerErrorException(error);
     }
   }

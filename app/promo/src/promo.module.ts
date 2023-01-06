@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configuration } from 'src/config/config';
+import { Promo } from './entities/promo.entity';
 import { HealthcheckModule } from './healthcheck/healthcheck.module';
 import { PromoController } from './promo.controller';
 import { PromoService } from './promo.service';
@@ -17,7 +18,8 @@ import { PromoRepository } from './repository/promo.repository';
       username: configuration.GetPostgresConfig().username,
       password: configuration.GetPostgresConfig().password,
       database: configuration.GetPostgresConfig().database,
-      synchronize: configuration.GetPostgresConfig().synchronize,
+      entities: [Promo],
+      synchronize: true,
       autoLoadEntities: true,
     }),
     ClientsModule.registerAsync([
@@ -27,7 +29,7 @@ import { PromoRepository } from './repository/promo.repository';
           transport: Transport.RMQ,
           options: {
             urls: [
-              'amqp://' +
+              configuration.GetRabbitMQConfig().protocol +
                 configuration.GetRabbitMQConfig().username +
                 ':' +
                 configuration.GetRabbitMQConfig().password +
@@ -50,7 +52,7 @@ import { PromoRepository } from './repository/promo.repository';
           transport: Transport.RMQ,
           options: {
             urls: [
-              'amqp://' +
+              configuration.GetRabbitMQConfig().protocol +
                 configuration.GetRabbitMQConfig().username +
                 ':' +
                 configuration.GetRabbitMQConfig().password +

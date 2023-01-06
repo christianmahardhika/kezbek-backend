@@ -2,9 +2,13 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configuration } from 'src/config/config';
+import { Loyalty, LoyaltyRules } from './entities/loyalty.entity';
 import { LoyaltyController } from './loyalty.controller';
 import { LoyaltyService } from './loyalty.service';
-import { LoyaltyRepository } from './repository/loyalty.repository';
+import {
+  LoyaltyRepository,
+  LoyaltyRulesRepository,
+} from './repository/loyalty.repository';
 
 @Module({
   imports: [
@@ -15,7 +19,8 @@ import { LoyaltyRepository } from './repository/loyalty.repository';
       username: configuration.GetPostgresConfig().username,
       password: configuration.GetPostgresConfig().password,
       database: configuration.GetPostgresConfig().database,
-      synchronize: configuration.GetPostgresConfig().synchronize,
+      entities: [Loyalty, LoyaltyRules],
+      synchronize: true,
       autoLoadEntities: true,
     }),
     ClientsModule.registerAsync([
@@ -25,7 +30,7 @@ import { LoyaltyRepository } from './repository/loyalty.repository';
           transport: Transport.RMQ,
           options: {
             urls: [
-              'amqp://' +
+              configuration.GetRabbitMQConfig().protocol +
                 configuration.GetRabbitMQConfig().username +
                 ':' +
                 configuration.GetRabbitMQConfig().password +
@@ -48,7 +53,7 @@ import { LoyaltyRepository } from './repository/loyalty.repository';
           transport: Transport.RMQ,
           options: {
             urls: [
-              'amqp://' +
+              'amqps://' +
                 configuration.GetRabbitMQConfig().username +
                 ':' +
                 configuration.GetRabbitMQConfig().password +
@@ -68,6 +73,6 @@ import { LoyaltyRepository } from './repository/loyalty.repository';
     ]),
   ],
   controllers: [LoyaltyController],
-  providers: [LoyaltyService, LoyaltyRepository],
+  providers: [LoyaltyService, LoyaltyRepository, LoyaltyRulesRepository],
 })
 export class LoyaltyModule {}
