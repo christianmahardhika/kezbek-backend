@@ -12,6 +12,10 @@ type PostgresConfig = {
   synchronize: boolean;
 };
 
+type PaymentService = {
+  host: string;
+};
+
 // rabbitmq config type
 type RabbitMQConfig = {
   host: string;
@@ -53,6 +57,15 @@ class Config {
       password: process.env.POSTGRES_PASSWORD || 'postgres',
       database: process.env.POSTGRES_DATABASE || 'postgres',
       synchronize: process.env.POSTGRES_SYNCHRONIZE === 'true',
+    };
+  }
+
+  // payment service config env
+  GetPaymentServiceConfig(): PaymentService {
+    return {
+      host:
+        process.env.PAYMENT_SERVICE_HOST ||
+        'https://private-e83ba-kezbekpaymentservice.apiary-mock.com/payment',
     };
   }
 

@@ -36,6 +36,10 @@ export class SubmitTransactionDto extends PartialType(CreateTransactionDto) {
     description: 'Partner ID',
   })
   partner_id: string;
+  @ApiProperty({ example: '+628112345768', description: 'customer msisdn' })
+  customer_msisdn: string;
+  @ApiProperty({ example: 'linkAja', description: 'payment provider' })
+  payment_provider: string;
   @ApiProperty({ example: 100000, description: 'Transaction Amount' })
   @IsDecimal({ message: 'Transaction Amount must be a decimal' })
   @Min(1, { message: 'Transaction Amount must be greater than 0' })

@@ -1,7 +1,13 @@
+import { HttpService } from '@nestjs/axios';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
-import { CashBackDto } from './dto/cashback.dto';
+import { catchError, firstValueFrom } from 'rxjs';
+import { configuration } from './config/config';
+import {
+  CashBackDto,
+  CashbackPrecentageDto,
+  SendCashbackDto,
+} from './dto/cashback.dto';
 import {
   CreateTransactionDto,
   SubmitTransactionDto,
@@ -17,6 +23,7 @@ export class TransactionService {
     private readonly repository: TransactionRepository,
     @Inject('PROMO_SERVICE') private readonly promoClient: ClientProxy,
     @Inject('LOYALTY_SERVICE') private readonly loyaltyClient: ClientProxy,
+    private readonly httpService: HttpService,
   ) {
     this.promoClient.connect();
     this.loyaltyClient.connect();
@@ -34,9 +41,9 @@ export class TransactionService {
     return new Promise(async (resolve, reject) => {
       try {
         // TODO: Implement check if customer is eligible for cashback (message to promo service) and tier reward (message to loyalty service)
-        var loyaltyDto: LoyaltyDto;
-        var cashback: number;
-        var transactionDto: CreateTransactionDto;
+        let loyaltyDto: LoyaltyDto;
+        let cashbackPrecentageDto: CashbackPrecentageDto;
+        let transactionDto: CreateTransactionDto;
         await Promise.all([
           this.checkTierByCustomerEmail(submitTransactionDto.customer_email),
           this.getCashback(
@@ -49,7 +56,7 @@ export class TransactionService {
         ])
           .then((values) => {
             loyaltyDto = values[0];
-            cashback = values[1];
+            cashbackPrecentageDto = values[1][0];
             transactionDto = values[2];
             if (!loyaltyDto) {
               const data = new SubmitTransactionReturnDto(
@@ -78,15 +85,33 @@ export class TransactionService {
         });
 
         // upgrade tier if eligible
-        loyaltyDto = await this.upgradeTierReward(loyaltyDto);
+        loyaltyDto = this.upgradeTierReward(loyaltyDto);
         // downgrade tier there is no transaction in 1 month
-        loyaltyDto = await this.downgradeTierReward(loyaltyDto, transactionDto);
+        loyaltyDto = this.downgradeTierReward(loyaltyDto, transactionDto);
         // async
 
         // TODO: Implement send email notification to customer (add to queue)
 
-        // TODO: Implement send cashback to customer (add to queue)
-
+        // Implement send cashback to customer
+        const cashbackDto: SendCashbackDto = {
+          msisdn: submitTransactionDto.customer_msisdn,
+          amount:
+            submitTransactionDto.transaction_amount *
+            (cashbackPrecentageDto.cashback_percentage / 100),
+          provider: submitTransactionDto.payment_provider,
+        };
+        const { data } = await firstValueFrom(
+          this.httpService
+            .post(configuration.GetPaymentServiceConfig().host, cashbackDto)
+            .pipe(
+              catchError((err) => {
+                this.logger.error(err);
+                // TODO: flag transaction as cashback not applied
+                throw 'Error when sending cashback to payment service';
+              }),
+            ),
+        );
+        console.log(data);
         // Implement update loyalty tier (send event to loyalty service)
         if (loyaltyDto.reccuring_transaction != 0) {
           loyaltyDto.reccuring_transaction =
@@ -101,10 +126,14 @@ export class TransactionService {
           customer_email: submitTransactionDto.customer_email,
           transaction_amount: submitTransactionDto.transaction_amount,
           transaction_quantity: submitTransactionDto.transaction_quantity,
-          cashback_amount: cashback,
+          cashback_amount:
+            submitTransactionDto.transaction_amount *
+            (cashbackPrecentageDto.cashback_percentage / 100),
           tier_reward_amount: reward,
           total_reward_amount:
-            submitTransactionDto.transaction_amount * (cashback / 100) + reward,
+            submitTransactionDto.transaction_amount *
+              (cashbackPrecentageDto.cashback_percentage / 100) +
+            reward,
           tier: loyaltyDto.current_tier,
           is_cashback_applied: true,
           partner_id: submitTransactionDto.partner_id,

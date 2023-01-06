@@ -1,3 +1,4 @@
+import { HttpService } from '@nestjs/axios';
 import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Transaction } from './entities/transaction.entity';
@@ -23,6 +24,7 @@ describe('TransactionService', () => {
         { provide: TransactionRepository, useValue: mockRepositoryTransaction },
         { provide: 'PROMO_SERVICE', useValue: simulationClientMock },
         { provide: 'LOYALTY_SERVICE', useValue: simulationClientMock },
+        { provide: HttpService, useValue: jest.fn() },
       ],
     }).compile();
 
