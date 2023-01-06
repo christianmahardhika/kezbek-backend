@@ -36,6 +36,8 @@ export class SubmitTransactionDto extends PartialType(CreateTransactionDto) {
     description: 'Partner ID',
   })
   partner_id: string;
+  @ApiProperty({ example: 'Tokopedia', description: 'Partner Name' })
+  partner_name: string;
   @ApiProperty({ example: '+628112345768', description: 'customer msisdn' })
   customer_msisdn: string;
   @ApiProperty({ example: 'linkAja', description: 'payment provider' })
