@@ -12,14 +12,6 @@ type PostgresConfig = {
   synchronize: boolean;
 };
 
-// redis Database config type
-type RedisConfig = {
-  host: string;
-  port: number;
-  password: string;
-  db: number;
-};
-
 // rabbitmq config type
 type RabbitMQConfig = {
   host: string;
@@ -61,16 +53,6 @@ class Config {
       password: process.env.POSTGRES_PASSWORD || 'postgres',
       database: process.env.POSTGRES_DATABASE || 'postgres',
       synchronize: process.env.POSTGRES_SYNCHRONIZE === 'true',
-    };
-  }
-
-  // redis config env
-  GetRedisConfig(): RedisConfig {
-    return {
-      host: process.env.REDIS_HOST || 'localhost',
-      port: parseInt(process.env.REDIS_PORT) || 6379,
-      password: process.env.REDIS_PASSWORD || 'redis',
-      db: parseInt(process.env.REDIS_DB),
     };
   }
 

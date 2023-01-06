@@ -19,23 +19,13 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_NAME=postgres
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=redis
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
       - RABBITMQ_USER=rabbitmq
       - RABBITMQ_PASSWORD=rabbitmq
-      - MONGO_HOST=document_database
-      - MONGO_PORT=27017
-      - MONGO_USER=mongo
-      - MONGO_PASSWORD=mongo
-      - MONGO_DATABASE=mongo
     depends_on:
       - database
-      - redis
       - rabbitmq
-      - document_database
     healthcheck:
       test: curl --fail shttp://localhost:3001/healthcheck || exit 1
       interval: 1m30s
@@ -58,23 +48,13 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_NAME=postgres
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=redis
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
       - RABBITMQ_USER=rabbitmq
       - RABBITMQ_PASSWORD=rabbitmq
-      - MONGO_HOST=document_database
-      - MONGO_PORT=27017
-      - MONGO_USER=mongo
-      - MONGO_PASSWORD=mongo
-      - MONGO_DATABASE=mongo
     depends_on:
       - database
-      - redis
       - rabbitmq
-      - document_database
     healthcheck:
       test: curl --fail shttp://localhost:3002/healthcheck || exit 1
       interval: 1m30s
@@ -97,23 +77,13 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_NAME=postgres
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=redis
       - RABBITMQ_HOST=rabbitmq
       - RABBITMQ_PORT=5672
       - RABBITMQ_USER=rabbitmq
       - RABBITMQ_PASSWORD=rabbitmq
-      - MONGO_HOST=document_database
-      - MONGO_PORT=27017
-      - MONGO_USER=mongo
-      - MONGO_PASSWORD=mongo
-      - MONGO_DATABASE=mongo
     depends_on:
       - database
-      - redis
       - rabbitmq
-      - document_database
     healthcheck:
       test: curl --fail shttp://localhost:3003/healthcheck || exit 1
       interval: 1m30s
@@ -133,30 +103,6 @@ services:
       - ./database:/var/lib/postgresql/data
     ports:
       - 5432:5432
-      
-  document_database:
-    image: mongo:4.4.4-bionic
-    container_name: document_database
-    restart: always
-    volumes:
-      - ./document_database:/data/db
-    ports:
-      - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: mongo
-      MONGO_INITDB_ROOT_PASSWORD: mongo
-      MONGO_INITDB_DATABASE: mongo
-
-  redis:
-    image: redis:6.0.9-alpine
-    container_name: redis
-    restart: always
-    volumes:
-      - ./redis:/data
-    ports:
-      - 6379:6379
-    environment:
-      REDIS_PASSWORD: redis
 
   rabbitmq:
     image: rabbitmq:3.8.9-management-alpine

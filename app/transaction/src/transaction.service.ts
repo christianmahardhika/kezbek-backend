@@ -40,8 +40,8 @@ export class TransactionService {
         await Promise.all([
           this.checkTierByCustomerEmail(submitTransactionDto.customer_email),
           this.getCashback(
-            submitTransactionDto.transaction_amount,
             submitTransactionDto.transaction_quantity,
+            submitTransactionDto.transaction_amount,
           ),
           this.repository.findLastTransactionByCustomerEmail(
             submitTransactionDto.customer_email,
