@@ -46,7 +46,6 @@ export class PromoService {
         trans_quantity,
         trans_amount,
       );
-      console.log(data);
       if (data.length === 0) {
         return 0;
       }

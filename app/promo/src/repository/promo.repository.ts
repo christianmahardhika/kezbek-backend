@@ -19,10 +19,8 @@ export class PromoRepository extends Repository<Promo> {
     trans_quantity: number,
     trans_amount: number,
   ): Promise<any> {
-    const data = await this.query(
-      `SELECT cashback_percentage FROM promo WHERE min_quantity <= ${trans_quantity} AND (min_transaction_amount <= ${trans_amount} and max_transaction_amount >= ${trans_amount}) AND is_active = true AND (promo_start_date <= NOW() AND promo_end_date >= NOW()) AND deleted_at IS NULL`,
-    );
-    return data;
+    const query = `SELECT cashback_percentage FROM promo WHERE min_quantity <= ${trans_quantity} AND (min_transaction_amount <= ${trans_amount} and max_transaction_amount >= ${trans_amount}) AND is_active = true AND (promo_start_date <= NOW() AND promo_end_date >= NOW()) AND deleted_at IS NULL;`;
+    return await this.query(query);
   }
 
   async updatePromo(updatePromoDto: UpdatePromoDto): Promise<Promo> {
