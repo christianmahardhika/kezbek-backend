@@ -22,3 +22,10 @@ functions:
       - http:
           method: any
           path: transaction
+          cors: true
+          type: COGNITO_USER_POOLS
+          authorizer:
+            name: kezbek-transaction
+            arn: arn:aws:cognito-idp:ap-southeast-1:735185491450:userpool/ap-southeast-1_x635CqCPA
+            authorizerId:
+              Ref: api-authorizer
