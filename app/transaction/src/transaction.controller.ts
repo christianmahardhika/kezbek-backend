@@ -1,4 +1,4 @@
-import { Body, Controller, Logger, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post } from '@nestjs/common';
 import {
   ApiBadRequestResponse,
   ApiBearerAuth,
@@ -75,10 +75,10 @@ export class TransactionController {
     }
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.transactionService.findOne(+id);
-  // }
+  @Get()
+  findOne() {
+    return 'OK';
+  }
 
   // @Patch(':id')
   // update(

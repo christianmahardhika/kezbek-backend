@@ -12,8 +12,8 @@ provider:
   stage: prod
   timeout: 20
   apiGateway:
-    restApiId: brvoz49rbj
-    restApiRootResourceId: 4f70qpyk4l
+    restApiId: vabgekogtk
+    restApiRootResourceId: bi1m6fzsd8
 
 functions:
   api:
