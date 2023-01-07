@@ -69,6 +69,29 @@ import { TransactionService } from './transaction.service';
           },
         }),
       },
+      {
+        name: 'NOTIFICATION_SERVICE',
+        useFactory: () => ({
+          transport: Transport.RMQ,
+          options: {
+            urls: [
+              configuration.GetRabbitMQConfig().protocol +
+                configuration.GetRabbitMQConfig().username +
+                ':' +
+                configuration.GetRabbitMQConfig().password +
+                '@' +
+                configuration.GetRabbitMQConfig().host +
+                ':' +
+                configuration.GetRabbitMQConfig().port,
+            ],
+            queue: configuration.GetRabbitMQConfig().queue_notification,
+            queueOptions: {
+              durable: false,
+            },
+            prefetchCount: 1,
+          },
+        }),
+      },
     ]),
     HttpModule,
     HealthcheckModule,

@@ -1,19 +1,23 @@
 // use dotenv
 import * as dotenv from 'dotenv';
 
-// postgress Database config type
-type PostgresConfig = {
-  type: string;
-  host: string;
-  port: number;
-  username: string;
-  password: string;
-  database: string;
-  synchronize: boolean;
+// Amazon SES config type
+type AmazonSESConfig = {
+  accessKeyId: string;
+  secretAccessKey: string;
+  region: string;
 };
 
-type PaymentService = {
+// SMTP config type
+type SMTPConfig = {
   host: string;
+  port: number;
+  secure: boolean;
+  auth: {
+    user: string;
+    pass: string;
+  };
+  from_email: string;
 };
 
 // rabbitmq config type
@@ -46,27 +50,29 @@ type RabbitMQConfig = {
 
 class Config {
   New(): void {
-    dotenv.config();
+    dotenv.config({ path: './src/config/.env' });
   }
-  // postgress config env
-  GetPostgresConfig(): PostgresConfig {
+
+  // SMTP config env
+  GetSMTPConfig(): SMTPConfig {
     return {
-      type: process.env.POSTGRES_TYPE || 'postgres',
-      host: process.env.POSTGRES_HOST || 'localhost',
-      port: parseInt(process.env.POSTGRES_PORT) || 5432,
-      username: process.env.POSTGRES_USERNAME || 'postgres',
-      password: process.env.POSTGRES_PASSWORD || 'postgres',
-      database: process.env.POSTGRES_DATABASE || 'postgres',
-      synchronize: process.env.POSTGRES_SYNCHRONIZE === 'true',
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: parseInt(process.env.SMTP_PORT) || 465,
+      secure: true,
+      auth: {
+        user: process.env.SMTP_USER || '',
+        pass: process.env.SMTP_PASS || '',
+      },
+      from_email: process.env.SMTP_FROM_EMAIL || '',
     };
   }
 
-  // payment service config env
-  GetPaymentServiceConfig(): PaymentService {
+  // Amazon SES config env
+  GetAmazonSESConfig(): AmazonSESConfig {
     return {
-      host:
-        process.env.PAYMENT_SERVICE_HOST ||
-        'https://private-e83ba-kezbekpaymentservice.apiary-mock.com/payment',
+      accessKeyId: process.env.AMAZON_SES_ACCESS_KEY_ID || '',
+      secretAccessKey: process.env.AMAZON_SES_SECRET_ACCESS_KEY || '',
+      region: process.env.AMAZON_SES_REGION || '',
     };
   }
 
@@ -78,30 +84,32 @@ class Config {
       protocol: process.env.RABBITMQ_PROTOCOL || 'amqp://',
       username: process.env.RABBITMQ_USERNAME || 'rabbitmq',
       password: process.env.RABBITMQ_PASSWORD || 'rabbitmq',
-      queue: process.env.RABBITMQ_QUEUE || 'test',
+      queue: process.env.RABBITMQ_QUEUE || 'transaction',
       queue_promo: process.env.RABBITMQ_QUEUE_PROMO || 'promo',
       queue_loyalty: process.env.RABBITMQ_QUEUE_LOYALTY || 'loyalty',
-      queue_transaction:
-        process.env.RABBITMQ_QUEUE_TRANSACTION || 'transaction',
       queue_notification:
         process.env.RABBITMQ_QUEUE_NOTIFICATION || 'notification',
-      exchange: process.env.RABBITMQ_EXCHANGE,
-      routingKey: process.env.RABBITMQ_ROUTINGKEY,
+      queue_transaction:
+        process.env.RABBITMQ_QUEUE_TRANSACTION || 'transaction',
+      exchange: process.env.RABBITMQ_EXCHANGE || 'amq.topic',
+      routingKey: process.env.RABBITMQ_ROUTING_KEY || 'transaction',
       queueDurable: process.env.RABBITMQ_QUEUE_DURABLE === 'true',
       queueExclusive: process.env.RABBITMQ_QUEUE_EXCLUSIVE === 'true',
       queueAutoDelete: process.env.RABBITMQ_QUEUE_AUTODELETE === 'true',
       queueNoAck: process.env.RABBITMQ_QUEUE_NOACK === 'true',
-      queuePrefetchCount: parseInt(process.env.RABBITMQ_QUEUE_PREFETCHCOUNT),
-      queuePrefetchSize: parseInt(process.env.RABBITMQ_QUEUE_PREFETCHSIZE),
-      queuePrefetchGlobal: process.env.RABBITMQ_QUEUE_PREFETCHGLOBAL === 'true',
+      queuePrefetchCount:
+        parseInt(process.env.RABBITMQ_QUEUE_PREFETCH_COUNT) || 1,
+      queuePrefetchSize:
+        parseInt(process.env.RABBITMQ_QUEUE_PREFETCH_SIZE) || 0,
+      queuePrefetchGlobal:
+        process.env.RABBITMQ_QUEUE_PREFETCH_GLOBAL === 'true',
       queueRequeue: process.env.RABBITMQ_QUEUE_REQUEUE === 'true',
-      queueRequeueDelay: parseInt(process.env.RABBITMQ_QUEUE_REQUEUEDELAY),
-      queueRequeueMaxRetries: parseInt(
-        process.env.RABBITMQ_QUEUE_REQUEUEMAXRETRIES,
-      ),
-      queueRequeueMaxRetriesInterval: parseInt(
-        process.env.RABBITMQ_QUEUE_REQUEUEMAXRETRIESINTERVAL,
-      ),
+      queueRequeueDelay:
+        parseInt(process.env.RABBITMQ_QUEUE_REQUEUE_DELAY) || 0,
+      queueRequeueMaxRetries:
+        parseInt(process.env.RABBITMQ_QUEUE_REQUEUE_MAX_RETRIES) || 0,
+      queueRequeueMaxRetriesInterval:
+        parseInt(process.env.RABBITMQ_QUEUE_REQUEUE_MAX_RETRIES_INTERVAL) || 0,
       queueReq: process.env.RABBITMQ_QUEUE_REQ === 'true',
     };
   }

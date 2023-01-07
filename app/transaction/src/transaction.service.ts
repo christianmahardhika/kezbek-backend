@@ -13,6 +13,7 @@ import {
   SubmitTransactionDto,
   SubmitTransactionReturnDto,
 } from './dto/create-transaction.dto';
+import { EmailParamDto } from './dto/email.dto';
 import { LoyaltyDto } from './dto/loyalty.dto';
 import { Transaction } from './entities/transaction.entity';
 import { TransactionRepository } from './repository/transaction.repository';
@@ -23,6 +24,8 @@ export class TransactionService {
     private readonly repository: TransactionRepository,
     @Inject('PROMO_SERVICE') private readonly promoClient: ClientProxy,
     @Inject('LOYALTY_SERVICE') private readonly loyaltyClient: ClientProxy,
+    @Inject('NOTIFICATION_SERVICE')
+    private readonly notificationClient: ClientProxy,
     private readonly httpService: HttpService,
   ) {
     this.promoClient.connect();
@@ -44,6 +47,10 @@ export class TransactionService {
         let loyaltyDto: LoyaltyDto;
         let cashbackPrecentageDto: CashbackPrecentageDto;
         let transactionDto: CreateTransactionDto;
+        const formatter = new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        });
         await Promise.all([
           this.checkTierByCustomerEmail(submitTransactionDto.customer_email),
           this.getCashback(
@@ -83,6 +90,16 @@ export class TransactionService {
         await this.checkReward(loyaltyDto).then((value) => {
           reward = value;
         });
+        // calculate cashback amount
+        const cashbackAmount: number =
+          submitTransactionDto.transaction_amount *
+          (cashbackPrecentageDto.cashback_percentage / 100);
+
+        // calculate total cashback amount
+        const totalCashbackAmount: number = cashbackAmount + reward;
+        const formatedTotalCashbackAmount = parseFloat(
+          formatter.format(totalCashbackAmount),
+        );
 
         // upgrade tier if eligible
         loyaltyDto = this.upgradeTierReward(loyaltyDto);
@@ -92,12 +109,18 @@ export class TransactionService {
 
         // TODO: Implement send email notification to customer (add to queue)
 
+        const emailDto: EmailParamDto = {
+          email: submitTransactionDto.customer_email,
+          amount: formatedTotalCashbackAmount,
+          partner_name: submitTransactionDto.partner_name,
+          payment_provider: submitTransactionDto.payment_provider,
+        };
+        this.notificationClient.emit('email-notification', emailDto);
+
         // Implement send cashback to customer
         const cashbackDto: SendCashbackDto = {
           msisdn: submitTransactionDto.customer_msisdn,
-          amount:
-            submitTransactionDto.transaction_amount *
-            (cashbackPrecentageDto.cashback_percentage / 100),
+          amount: formatedTotalCashbackAmount,
           provider: submitTransactionDto.payment_provider,
         };
         const { data } = await firstValueFrom(
@@ -111,7 +134,6 @@ export class TransactionService {
               }),
             ),
         );
-        console.log(data);
         // Implement update loyalty tier (send event to loyalty service)
         if (loyaltyDto.reccuring_transaction != 0) {
           loyaltyDto.reccuring_transaction =
@@ -126,14 +148,9 @@ export class TransactionService {
           customer_email: submitTransactionDto.customer_email,
           transaction_amount: submitTransactionDto.transaction_amount,
           transaction_quantity: submitTransactionDto.transaction_quantity,
-          cashback_amount:
-            submitTransactionDto.transaction_amount *
-            (cashbackPrecentageDto.cashback_percentage / 100),
+          cashback_amount: cashbackAmount,
           tier_reward_amount: reward,
-          total_reward_amount:
-            submitTransactionDto.transaction_amount *
-              (cashbackPrecentageDto.cashback_percentage / 100) +
-            reward,
+          total_reward_amount: formatedTotalCashbackAmount,
           tier: loyaltyDto.current_tier,
           is_cashback_applied: true,
           partner_id: submitTransactionDto.partner_id,

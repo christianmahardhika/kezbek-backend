@@ -1,4 +1,4 @@
-service: kezbek-loyalty
+service: kezbek-transaction
 
 frameworkVersion: '3'
 
@@ -21,10 +21,10 @@ functions:
     events:
       - http:
           method: any
-          path: loyalty
+          path: notification
           cors: true
           authorizer:
-            name: kezbek-loyalty
+            name: kezbek-notification
             arn: arn:aws:cognito-idp:ap-southeast-1:735185491450:userpool/ap-southeast-1_x635CqCPA
             authorizerId:
               Ref: api-authorizer

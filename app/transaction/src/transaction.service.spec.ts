@@ -24,6 +24,7 @@ describe('TransactionService', () => {
         { provide: TransactionRepository, useValue: mockRepositoryTransaction },
         { provide: 'PROMO_SERVICE', useValue: simulationClientMock },
         { provide: 'LOYALTY_SERVICE', useValue: simulationClientMock },
+        { provide: 'NOTIFICATION_SERVICE', useValue: simulationClientMock },
         { provide: HttpService, useValue: jest.fn() },
       ],
     }).compile();
