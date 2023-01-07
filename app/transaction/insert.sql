@@ -1,0 +1,2 @@
+
+INSERT INTO transaction (customer_email, partner_id, is_cashback_applied, transaction_quantity,transaction_amount, tier_reward_amount, tier, total_reward_amount, created_at, updated_at, deleted_at) VALUES ('christian.mahardhika@gmail.com','7096dabb-8cc2-4e3b-bf63-127ea2678d48',true,1,1001,100,1,100001,NOW(),null,null);

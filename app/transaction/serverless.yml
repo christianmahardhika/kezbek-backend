@@ -21,8 +21,7 @@ functions:
     events:
       - http:
           method: any
-          path: transaction
-          cors: true
+          path: /transaction/{proxy+}
           authorizer:
             name: kezbek-transaction
             arn: arn:aws:cognito-idp:ap-southeast-1:735185491450:userpool/ap-southeast-1_x635CqCPA

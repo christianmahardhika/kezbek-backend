@@ -21,10 +21,16 @@ functions:
     events:
       - http:
           method: any
-          path: promo
-          cors: true
+          path: promo/{proxy+}
           authorizer:
             name: kezbek-promo
             arn: arn:aws:cognito-idp:ap-southeast-1:735185491450:userpool/ap-southeast-1_x635CqCPA
             authorizerId:
               Ref: api-authorizer
+      - rabbitmq:
+          arn: arn:aws:mq:ap-southeast-3:735185491450:broker:kezbek-backend-mq:b-722e875f-df49-447d-92f0-4db1e8a2c1ef
+          queue: promo
+          basicAuthArn: arn:aws:secretsmanager:ap-southeast-3:735185491450:secret:rabbitmq-secret-vQy7bx
+          enabled: true
+          virtualHost: amqps://b-722e875f-df49-447d-92f0-4db1e8a2c1ef.mq.ap-southeast-3.amazonaws.com:5671
+          
