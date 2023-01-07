@@ -24,6 +24,8 @@ Currently, we are integrating with dummy payment gateway and dummy merchant
 
 ## Architecture
 
+![Architecture](./docs/Kezbek-be-arch.drawio.png)
+
 ## How to run it locally
 
 before please install [docker engine](https://docs.docker.com/engine/install/) and [docker compose](https://docs.docker.com/compose/install/)
@@ -45,7 +47,5 @@ $ npm run start
 # watch mode
 $ npm run start:dev
 ```
-
-## How to contribute
 
 ## Library

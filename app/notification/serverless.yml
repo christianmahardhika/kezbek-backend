@@ -28,8 +28,8 @@ functions:
             authorizerId:
               Ref: api-authorizer
       - rabbitmq:
-          arn: arn:aws:mq:ap-southeast-3:735185491450:broker:kezbek-backend-mq:b-722e875f-df49-447d-92f0-4db1e8a2c1ef
+          arn: arn:aws:mq:ap-southeast-1:735185491450:broker:kezbek-backend-mq:b-7f49d384-2141-4097-bda3-198df4b37108
           queue: notification
           basicAuthArn: arn:aws:secretsmanager:ap-southeast-3:735185491450:secret:rabbitmq-secret-vQy7bx
           enabled: true
-          virtualHost: amqps://b-722e875f-df49-447d-92f0-4db1e8a2c1ef.mq.ap-southeast-3.amazonaws.com:5671
+          virtualHost: amqps://b-7f49d384-2141-4097-bda3-198df4b37108.mq.ap-southeast-1.amazonaws.com:5671
