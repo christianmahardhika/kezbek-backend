@@ -7,3 +7,6 @@ services:
 
   promo:
     path: app/promo
+
+  notification:
+    path: app/notification

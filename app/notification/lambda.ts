@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { configure as serverlessExpress } from '@vendia/serverless-express';
-import { AppModule } from 'src/app.module';
+import { AppModule } from './src/app.module';
 
 let cachedServer;
 

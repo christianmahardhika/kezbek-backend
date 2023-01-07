@@ -1,4 +1,4 @@
-service: kezbek-transaction
+service: kezbek-notification
 
 frameworkVersion: '3'
 
