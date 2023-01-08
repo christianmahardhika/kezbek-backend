@@ -10,12 +10,6 @@ Kezbek is a type of application that allows users to earn rewards or cash back w
 - Seemless integration with merchant (partner)
 - Seemless integration with payment gateway (e-wallet) by customer MSISDN
 
-- [*]CMS for merchant
-- [*]Report for invoice and transaction for merchant
-- [*]Check loyalty point for customer
-
-**NOTE:** [*] is additional feature
-
 Currently, we are integrating with dummy payment gateway and dummy merchant
 
 ## ERD
