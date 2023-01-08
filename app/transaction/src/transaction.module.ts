@@ -1,10 +1,11 @@
-import { HttpModule } from '@nestjs/axios';
+import { HttpService } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configuration } from 'src/config/config';
 import { Transaction } from './entities/transaction.entity';
 import { HealthcheckModule } from './healthcheck/healthcheck.module';
+import { TransactionProvider } from './provider/transaction.provider';
 import { TransactionRepository } from './repository/transaction.repository';
 import { TransactionController } from './transaction.controller';
 import { TransactionService } from './transaction.service';
@@ -93,7 +94,8 @@ import { TransactionService } from './transaction.service';
         }),
       },
     ]),
-    HttpModule,
+    TransactionProvider,
+    HttpService,
     HealthcheckModule,
   ],
   controllers: [TransactionController],

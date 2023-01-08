@@ -27,3 +27,11 @@ functions:
             arn: arn:aws:cognito-idp:ap-southeast-1:735185491450:userpool/ap-southeast-1_x635CqCPA
             authorizerId:
               Ref: api-authorizer
+      - MQEvent:
+          type: MQ
+          properties:
+            Broker: arn:aws:mq:ap-southeast-1:735185491450:broker:kezbek-backend-mq:b-7f49d384-2141-4097-bda3-198df4b37108
+            Queue: transaction
+            SourceAccessConfigurations:
+              - Type: BASIC_AUTH
+                URI: arn:aws:secretsmanager:ap-southeast-1:735185491450:secret:MQAccess-9agtwa
