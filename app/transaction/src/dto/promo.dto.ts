@@ -10,12 +10,6 @@ export class PromoDto {
   @IsString()
   id: string;
   @ApiProperty({
-    example: '1dqwe2-123123-123123-123123',
-    description: 'The uuid of the Partner',
-  })
-  @IsString()
-  partner_id: string;
-  @ApiProperty({
     example: 'PROMO123',
     description: 'The code of the Promo',
   })

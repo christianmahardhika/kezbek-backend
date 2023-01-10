@@ -54,12 +54,38 @@ export class TransactionService {
             cashbackPrecentage = values[1][0];
             transactionDto = values[2];
             if (!loyaltyDto) {
-              const data = new SubmitTransactionReturnDto(
-                false,
-                'customer is not eligible for tier reward',
-                null,
-              );
-              reject(data);
+              loyaltyDto = {
+                id: null,
+                current_tier_name: 'bronze',
+                next_tier: 2,
+                previous_tier: 0,
+                customer_email: submitTransactionDto.customer_email,
+                current_tier: 1,
+                is_point_send: false,
+                reccuring_transaction: 0,
+                created_at: new Date(),
+                updated_at: null,
+                deleted_at: null,
+                upgradeTierReward: null,
+                downgradeTierReward: null,
+              };
+              this.provider.updateLoyalty(loyaltyDto);
+            }
+            if (!transactionDto) {
+              transactionDto = {
+                customer_email: submitTransactionDto.customer_email,
+                transaction_amount: submitTransactionDto.transaction_amount,
+                transaction_quantity: submitTransactionDto.transaction_quantity,
+                cashback_amount: 0,
+                tier_reward_amount: 0,
+                total_reward_amount: 0,
+                tier: loyaltyDto.current_tier,
+                is_cashback_applied: false,
+                partner_id: null,
+                created_at: new Date(),
+                updated_at: null,
+                deleted_at: null,
+              };
             }
           })
           .catch((err) => {

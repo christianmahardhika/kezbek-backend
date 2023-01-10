@@ -10,12 +10,6 @@ export class Promo {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @ApiProperty({
-    example: '7096dabb-8cc2-4e3b-bf63-127ea2678d48',
-    description: 'The uuid of the Partner',
-  })
-  @Column({ type: 'uuid' })
-  partner_id: string;
-  @ApiProperty({
     example: 'true',
     description: 'The status of the Promo',
   })
@@ -37,7 +31,7 @@ export class Promo {
     example: 10000,
     description: 'The maximum transaction amount',
   })
-  @Column({ type: 'decimal' })
+  @Column({ type: 'decimal', nullable: true })
   max_transaction_amount: number;
   @ApiProperty({
     example: 1.5,

@@ -19,10 +19,10 @@ export class Loyalty {
   @Column({ type: 'int' })
   current_tier: number;
   @ApiProperty({ example: 2, description: 'Next Tier Level' })
-  @Column({ type: 'int' })
+  @Column({ type: 'int', nullable: true })
   next_tier: number;
   @ApiProperty({ example: 1, description: 'Last Tier Level' })
-  @Column({ type: 'int' })
+  @Column({ type: 'int', nullable: true })
   previous_tier: number;
   @ApiProperty({
     example: false,
