@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { pick } from 'lodash';
 import { CreateLoyaltyDto } from './dto/create-loyalty.dto';
+import { GetLoyaltyRulesDto } from './dto/get-loyalty.dto';
 import { UpdateLoyaltyDto } from './dto/update-loyalty.dto';
 import { Loyalty } from './entities/loyalty.entity';
 import { LoyaltyService } from './loyalty.service';
@@ -133,6 +134,33 @@ describe('LoyaltyService', () => {
       expect(findLoyaltyByCustomerEmailOnSpy).toHaveBeenCalledTimes(1);
       expect(findLoyaltyByCustomerEmailOnSpy).toHaveBeenCalledWith(
         customer_email,
+      );
+    });
+  });
+
+  describe('Get Loyalty Rules By Tier and Transaction Applied', () => {
+    it('should return a loyalty rules', async () => {
+      // setup the mock
+      const current_tier = mockLoyaltyEntity.current_tier;
+      const reccuring_transaction = mockLoyaltyEntity.reccuring_transaction;
+      const data: GetLoyaltyRulesDto = {
+        loyalty_tier: current_tier,
+        min_transaction_applied: reccuring_transaction,
+      };
+
+      const findLoyaltyRulesOnSpy = jest
+        .spyOn(mockLoyaltyRulesRepository, 'findAll')
+        .mockResolvedValue(mockLoyaltyEntity as Loyalty);
+
+      // call method
+      const result = await service.getAllLoyaltyRules(data);
+
+      // assert result
+      expect(result).toEqual(mockLoyaltyEntity);
+      expect(findLoyaltyRulesOnSpy).toHaveBeenCalledTimes(1);
+      expect(findLoyaltyRulesOnSpy).toHaveBeenCalledWith(
+        current_tier,
+        reccuring_transaction,
       );
     });
   });

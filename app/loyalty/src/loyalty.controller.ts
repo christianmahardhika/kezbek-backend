@@ -15,6 +15,7 @@ import {
 } from '@nestjs/swagger';
 import { SuccessCreateResponse } from './dto/base-response.dto';
 import { CreateLoyaltyDto } from './dto/create-loyalty.dto';
+import { GetLoyaltyRulesDto } from './dto/get-loyalty.dto';
 import { UpdateLoyaltyDto } from './dto/update-loyalty.dto';
 import { LoyaltyService } from './loyalty.service';
 
@@ -71,9 +72,9 @@ export class LoyaltyController {
   }
 
   @MessagePattern('get-loyalty-point-by-transaction-applied')
-  async getAllLoyaltyRules(@Payload() data: any) {
+  async getAllLoyaltyRules(@Payload() data: GetLoyaltyRulesDto) {
     try {
-      const result = await this.loyaltyService.getAllLoyaltyRules();
+      const result = await this.loyaltyService.getAllLoyaltyRules(data);
       this.logger.log(
         `Message [get-loyalty-point-by-transaction-applied] successfully send ${result}`,
       );

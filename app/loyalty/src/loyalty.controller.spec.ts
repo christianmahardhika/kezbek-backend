@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { pick } from 'lodash';
 import { SuccessCreateResponse } from './dto/base-response.dto';
 import { CreateLoyaltyDto } from './dto/create-loyalty.dto';
+import { GetLoyaltyRulesDto } from './dto/get-loyalty.dto';
 import { UpdateLoyaltyDto } from './dto/update-loyalty.dto';
 import { Loyalty } from './entities/loyalty.entity';
 import { LoyaltyController } from './loyalty.controller';
@@ -123,6 +124,30 @@ describe('LoyaltyController', () => {
       const result = await controller.checkTierReward(
         mockLoyaltyEntity.customer_email,
       );
+
+      // assert the result
+      expect(result).toEqual(mockLoyaltyEntity);
+      expect(findAllLoyaltyOnSpy).toHaveBeenCalledTimes(1);
+      expect(findAllLoyaltyOnSpy).toHaveBeenCalledWith(
+        mockLoyaltyEntity.customer_email,
+      );
+    });
+  });
+
+  describe('Get All Loyalty Rules', () => {
+    it('should return a loyalty', async () => {
+      // setup the mock
+      const findAllLoyaltyOnSpy = jest
+        .spyOn(mockLoyaltyService, 'getByCustomerID')
+        .mockResolvedValue(mockLoyaltyEntity as Loyalty);
+
+      const data: GetLoyaltyRulesDto = {
+        loyalty_tier: mockLoyaltyEntity.current_tier,
+        min_transaction_applied: mockLoyaltyEntity.reccuring_transaction,
+      };
+
+      // execute the method
+      const result = await controller.getAllLoyaltyRules(data);
 
       // assert the result
       expect(result).toEqual(mockLoyaltyEntity);

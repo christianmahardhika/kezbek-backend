@@ -4,6 +4,7 @@ import {
   Logger,
 } from '@nestjs/common';
 import { CreateLoyaltyDto } from './dto/create-loyalty.dto';
+import { GetLoyaltyRulesDto } from './dto/get-loyalty.dto';
 import { UpdateLoyaltyDto } from './dto/update-loyalty.dto';
 import { Loyalty, LoyaltyRules } from './entities/loyalty.entity';
 import {
@@ -45,9 +46,14 @@ export class LoyaltyService {
     }
   }
 
-  async getAllLoyaltyRules(): Promise<LoyaltyRules[]> {
+  async getAllLoyaltyRules(
+    loyaltyRulesDto: GetLoyaltyRulesDto,
+  ): Promise<LoyaltyRules> {
     try {
-      return await this.repositoryLoyaltyRules.findAll();
+      return await this.repositoryLoyaltyRules.findByTierAndMinTranactionApplied(
+        loyaltyRulesDto.loyalty_tier,
+        loyaltyRulesDto.min_transaction_applied,
+      );
     } catch (error) {
       this.logger.error(
         `Error getting loyalty point by transaction applied: ${error}`,
