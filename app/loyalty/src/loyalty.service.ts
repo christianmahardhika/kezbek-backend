@@ -50,7 +50,7 @@ export class LoyaltyService {
     loyaltyRulesDto: GetLoyaltyRulesDto,
   ): Promise<LoyaltyRules> {
     try {
-      return await this.repositoryLoyaltyRules.findByTierAndMinTranactionApplied(
+      return await this.repositoryLoyaltyRules.findByTierAndMinTransactionApplied(
         loyaltyRulesDto.loyalty_tier,
         loyaltyRulesDto.min_transaction_applied,
       );

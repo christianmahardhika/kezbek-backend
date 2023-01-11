@@ -3,7 +3,7 @@ import { pick } from 'lodash';
 import { CreateLoyaltyDto } from './dto/create-loyalty.dto';
 import { GetLoyaltyRulesDto } from './dto/get-loyalty.dto';
 import { UpdateLoyaltyDto } from './dto/update-loyalty.dto';
-import { Loyalty } from './entities/loyalty.entity';
+import { Loyalty, LoyaltyRules } from './entities/loyalty.entity';
 import { LoyaltyService } from './loyalty.service';
 import {
   LoyaltyRepository,
@@ -13,6 +13,7 @@ import {
 describe('LoyaltyService', () => {
   let service: LoyaltyService;
   let mockLoyaltyEntity: Loyalty;
+  let mockLoyaltyRulesEntity: LoyaltyRules;
 
   const mockLoyaltyRepository = {
     createLoyalty: jest.fn(() => Promise.resolve(mockLoyaltyEntity)),
@@ -24,7 +25,10 @@ describe('LoyaltyService', () => {
   };
 
   const mockLoyaltyRulesRepository = {
-    findAll: jest.fn(() => Promise.resolve(mockLoyaltyEntity)),
+    findAll: jest.fn(() => Promise.resolve(mockLoyaltyRulesEntity)),
+    findByTierAndMinTransactionApplied: jest.fn(() =>
+      Promise.resolve(mockLoyaltyRulesEntity),
+    ),
   };
 
   beforeEach(async () => {
@@ -50,6 +54,16 @@ describe('LoyaltyService', () => {
       previous_tier: 1,
       is_point_send: false,
       reccuring_transaction: 1,
+      created_at: new Date(),
+      updated_at: new Date(),
+      deleted_at: null,
+    };
+
+    mockLoyaltyRulesEntity = {
+      id: '5f9f1c5b-7b1e-4b5c-8c1c-8c1c8c1c8c1c',
+      loyalty_tier: 1,
+      min_transaction_applied: 0,
+      loyalty_point: 10,
       created_at: new Date(),
       updated_at: new Date(),
       deleted_at: null,
@@ -149,14 +163,14 @@ describe('LoyaltyService', () => {
       };
 
       const findLoyaltyRulesOnSpy = jest
-        .spyOn(mockLoyaltyRulesRepository, 'findAll')
-        .mockResolvedValue(mockLoyaltyEntity as Loyalty);
+        .spyOn(mockLoyaltyRulesRepository, 'findByTierAndMinTransactionApplied')
+        .mockResolvedValue(mockLoyaltyRulesEntity as LoyaltyRules);
 
       // call method
       const result = await service.getAllLoyaltyRules(data);
 
       // assert result
-      expect(result).toEqual(mockLoyaltyEntity);
+      expect(result).toEqual(mockLoyaltyRulesEntity);
       expect(findLoyaltyRulesOnSpy).toHaveBeenCalledTimes(1);
       expect(findLoyaltyRulesOnSpy).toHaveBeenCalledWith(
         current_tier,

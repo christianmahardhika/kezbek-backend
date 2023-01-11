@@ -40,7 +40,7 @@ export class LoyaltyRulesRepository extends Repository<LoyaltyRules> {
   findAll(): Promise<LoyaltyRules[]> {
     return this.find();
   }
-  findByTierAndMinTranactionApplied(
+  findByTierAndMinTransactionApplied(
     loyalty_tier: number,
     min_transaction_applied: number,
   ): Promise<LoyaltyRules> {

@@ -20,7 +20,7 @@ type CognitoConfig = {
 
 class Config {
   New(): void {
-    dotenv.config({ path: './src/config/.env' });
+    dotenv.config();
   }
   // postgress config env
   GetPostgresConfig(): PostgresConfig {

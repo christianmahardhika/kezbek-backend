@@ -171,11 +171,10 @@ describe('LoyaltyRulesRepository', () => {
         .mockResolvedValue(mockLoyaltyRulesEntity as LoyaltyRules);
 
       // call the method
-      const result =
-        await repository.findByTierAndMinTranactionApplied(
-          mockLoyaltyRulesEntity.loyalty_tier,
-          mockLoyaltyRulesEntity.min_transaction_applied,
-        );
+      const result = await repository.findByTierAndMinTransactionApplied(
+        mockLoyaltyRulesEntity.loyalty_tier,
+        mockLoyaltyRulesEntity.min_transaction_applied,
+      );
 
       // assert the result
       expect(result).toEqual(mockLoyaltyRulesEntity);

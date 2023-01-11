@@ -43,8 +43,8 @@ export class TransactionProvider {
 
   async getReward(tier: number, reccuring_transaction: number) {
     const payload = {
-      tier: tier,
-      reccuring_transaction: reccuring_transaction,
+      loyalty_tier: tier,
+      min_transaction_applied: reccuring_transaction,
     };
     const data: number = await firstValueFrom(
       this.loyaltyClient.send(
