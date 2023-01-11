@@ -50,7 +50,7 @@ type RabbitMQConfig = {
 
 class Config {
   New(): void {
-    dotenv.config({ path: './src/config/.env' });
+    dotenv.config();
   }
 
   // SMTP config env
