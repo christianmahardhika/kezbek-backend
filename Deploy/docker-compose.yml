@@ -46,7 +46,6 @@ services:
       - RABBITMQ_PORT=5672
       - RABBITMQ_USER=rabbitmq
       - RABBITMQ_PASSWORD=rabbitmq
-      # - NODE_ENV=development
       # - SMTP_HOST=email-smtp.ap-southeast-1.amazonaws.com
       # - SMTP_USER=AKIA2WLDYKX5HBTKM7KG
       # - SMTP_PASS=BMcp7TW7znaXDOc2sO6IthzoAsSbfw9H6h4fZh39B0by

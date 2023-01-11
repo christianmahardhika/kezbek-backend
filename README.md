@@ -31,6 +31,8 @@ install [latest nodeJS](https://nodejs.org/en/download/)
 
 docker compose -f ./Deploy/docker-compose.yml up -d
 
+**Notes** before we run, please uncomment notification service in docker-compose.yml env variable section
+
 if docker compose is finished, you can run the app by click this url the OPEN API documentation at
 
 localhost:3001/api-document (loyalty service) or localhost:3002/api-document (promo service) or localhost:3003/api-document (transaction service)
