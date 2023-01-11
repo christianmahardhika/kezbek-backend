@@ -1,4 +1,4 @@
-import { HttpService } from '@nestjs/axios';
+import { HttpModule } from '@nestjs/axios';
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -94,11 +94,13 @@ import { TransactionService } from './transaction.service';
         }),
       },
     ]),
-    TransactionProvider,
-    HttpService,
+    HttpModule.register({
+      timeout: 2000,
+      maxRedirects: 3,
+    }),
     HealthcheckModule,
   ],
   controllers: [TransactionController],
-  providers: [TransactionService, TransactionRepository],
+  providers: [TransactionService, TransactionRepository, TransactionProvider],
 })
 export class TransactionModule {}
