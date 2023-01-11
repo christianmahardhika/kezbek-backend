@@ -29,7 +29,6 @@ describe('PromoController', () => {
 
     mockPromoEntity = {
       id: '76ce22c3-101b-4d8b-aba2-34df3d15e388',
-      partner_id: 'qwer3-123123-123123-12312',
       is_active: true,
       min_quantity: 1,
       min_transaction_amount: 10,
@@ -44,7 +43,6 @@ describe('PromoController', () => {
     mockPromoEntities = [
       {
         id: '76ce22c3-101b-4d8b-aba2-34df3d15e388',
-        partner_id: 'qwer3-123123-123123-12312',
         is_active: true,
         min_quantity: 1,
         min_transaction_amount: 10,
@@ -58,7 +56,6 @@ describe('PromoController', () => {
       },
       {
         id: '76ce22c3-101b-4d8b-aba2-34df3d15e388',
-        partner_id: 'qwer3-123123-123123-12312',
         is_active: true,
         min_quantity: 1,
         min_transaction_amount: 10,
@@ -84,7 +81,6 @@ describe('PromoController', () => {
   describe('Create Promo API', () => {
     it('should return a promo entity', async () => {
       const createDto = pick(mockPromoEntity, [
-        'partner_id',
         'promo_code',
         'is_active',
         'promo_description',
@@ -112,7 +108,6 @@ describe('PromoController', () => {
   describe('Update Promo API', () => {
     it('should return a promo entity', async () => {
       const updateDto = pick(mockPromoEntity, [
-        'partner_id',
         'promo_code',
         'is_active',
         'promo_description',

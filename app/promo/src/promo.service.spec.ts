@@ -27,7 +27,6 @@ describe('PromoService', () => {
     service = module.get<PromoService>(PromoService);
     mockPromoEntity = {
       id: '76ce22c3-101b-4d8b-aba2-34df3d15e388',
-      partner_id: 'qwer3-123123-123123-12312',
       is_active: true,
       min_quantity: 1,
       min_transaction_amount: 10,
@@ -42,7 +41,6 @@ describe('PromoService', () => {
     mockPromoEntities = [
       {
         id: '76ce22c3-101b-4d8b-aba2-34df3d15e388',
-        partner_id: 'qwer3-123123-123123-12312',
         is_active: true,
         min_quantity: 1,
         min_transaction_amount: 10,
@@ -56,7 +54,6 @@ describe('PromoService', () => {
       },
       {
         id: '76ce22c3-101b-4d8b-aba2-34df3d15e388',
-        partner_id: 'qwer3-123123-123123-12312',
         is_active: true,
         min_quantity: 1,
         min_transaction_amount: 10,
@@ -81,7 +78,6 @@ describe('PromoService', () => {
     it('should return new promo', async () => {
       // setup
       const createPromoDTO = pick(mockPromoEntity, [
-        'partner_id',
         'promo_code',
         'is_active',
         'promo_description',
@@ -107,7 +103,6 @@ describe('PromoService', () => {
       // setup
       const updatePromoDTO = pick(mockPromoEntity, [
         'id',
-        'partner_id',
         'promo_code',
         'is_active',
         'promo_description',
